@@ -17,11 +17,11 @@ Add credentials for the edgeshared container registry, username, password, and s
 1.	Follow this link to enter remote ps-session for iotcore, https://docs.microsoft.com/en-us/windows/iot-core/connect-your-device/powershell
 2.	In the ps-session, download the iotedge daemon set up script
 
-`[10.137.198.225]: PS C:\Data> Invoke-WebRequest aka.ms/IotEdgeSecurityDaemonSetupScript -OutFile 1.ps1`
+`[10.137.198.225]: PS C:\Data> Invoke-WebRequest aka.ms/IotEdgeSecurityDaemonSetupScript -OutFile daemon.ps1`
 
 3.	Import the downloaded script
 
-`[10.137.198.225]: PS C:\Data> . .\1.ps1`
+`[10.137.198.225]: PS C:\Data> . .\daemon.ps1`
 
 4.	Run function Deploy-IoTEdge, this function will download and install the latest cab for iotcore arm32, the device will reboot.
 5.	After the package has been installed, enter the PS session again and import the script again
