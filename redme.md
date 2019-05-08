@@ -29,7 +29,7 @@ Add credentials for the edgeshared container registry, username, password, and s
 
 7.	Iotedge service should now pick up the edgeAgent module, run Get-IoTEdgeLog to see the service logs, also Get-Service IoTEdge to see the service status
 
-8. Run iotedge check with the deployed iotedge-diagnostics module,
+8. Run iotedge check with the deployed iotedge-diagnostics module
 ```
 [10.137.198.225]: PS C:\Data> iotedge check --diagnostics-image-name edgeshared.azurecr.io/microsoft/azureiotedge-diagnostics:20190503.11-windows-arm32v7 --verbose -c c:\data\programdata\iotedge\config.yaml                                                                 Configuration checks
 --------------------
@@ -79,7 +79,7 @@ One or more checks raised warnings.
 
 # Appendix
 
-Sample IotEdge Logs output for edgeAgent
+## Sample IotEdge Logs output for edgeAgent
 ```
 [10.137.198.225]: PS C:\Data> iotedge logs edgeAgent --tail 20                                                                                                                                                                                                                 <6> 2019-05-07 16:50:45.976 -07:00 [INF] - Executing command: "Command Group: (\n  [Stop module edgeHub]\n  [Start module edgeHub]\n  [Saving edgeHub to store]\n)"
 <6> 2019-05-07 16:50:45.977 -07:00 [INF] - Executing command: "Stop module edgeHub"
@@ -102,7 +102,7 @@ Sample IotEdge Logs output for edgeAgent
 <6> 2019-05-07 16:53:30.576 -07:00 [INF] - Updated reported properties
 <6> 2019-05-07 16:53:35.862 -07:00 [INF] - Updated reported properties
 ```
-Sample IotEdge logs output for temp sensor module
+## Sample IotEdge logs output for temp sensor module
 ```
 [10.137.198.225]: PS C:\Data> iotedge logs tempsensor --tail 5                                                                                                                                                                                                                         5/7/2019 4:57:15 PM> Sending message: 39, Body: [{"machine":{"temperature":41.311389315203471,"pressure":3.3139557447700154},"ambient":{"temperature":21.159575671264705,"humidity":25},"timeCreated":"2019-05-07T23:57:15.8722238Z"}]
         5/7/2019 4:57:20 PM> Sending message: 40, Body: [{"machine":{"temperature":41.75127328897419,"pressure":3.3640691088704773},"ambient":{"temperature":21.008210290460013,"humidity":26},"timeCreated":"2019-05-07T23:57:20.9173357Z"}]
@@ -110,3 +110,11 @@ Sample IotEdge logs output for temp sensor module
         5/7/2019 4:57:31 PM> Sending message: 42, Body: [{"machine":{"temperature":42.955761865226435,"pressure":3.5012893264182012},"ambient":{"temperature":21.375939590798662,"humidity":26},"timeCreated":"2019-05-07T23:57:31.1088409Z"}]
         5/7/2019 4:57:36 PM> Sending message: 43, Body: [{"machine":{"temperature":43.996604232232364,"pressure":3.6198663049378643},"ambient":{"temperature":21.054292581302249,"humidity":24},"timeCreated":"2019-05-07T23:57:36.2057992Z"}]
 ```
+
+## Use device explorer to view the data sent from edge device to the hub
+1. Get the hub connection string, go to the hub portal, shared access policies, iothubowner, you'll see the hub connection string on the right side popup
+![HubConnectionString](./HubConnectionString.png)
+2. Install iot hub device explorer from https://github.com/Azure/azure-iot-sdk-csharp/releases/download/2019-1-4/SetupDeviceExplorer.msi, then launch device explorer
+3. Fill in the hub connection string and click update
+4. Switch to Data tab, select the device, if temp sensor is running well, you'll see data output as below
+![TempSensorData](./DeviceExplorerTempSensorData.png)
