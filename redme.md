@@ -31,7 +31,8 @@ Add credentials for the edgeshared container registry, username, password, and s
 
 7.	Iotedge service should now pick up the edgeAgent module, run `Get-IoTEdgeLog` to see the service logs, also `Get-Service IoTEdge` to see the service status
 
-## Run `IoTEdge Check` and other utils
+# Appendix
+## `IoTEdge Check`
 Run iotedge check with the deployed iotedge-diagnostics module
 ```
 [10.137.198.225]: PS C:\Data> iotedge check --diagnostics-image-name edgeshared.azurecr.io/microsoft/azureiotedge-diagnostics:20190503.11-windows-arm32v7 --verbose -c c:\data\programdata\iotedge\config.yaml                                                                 Configuration checks
@@ -80,7 +81,7 @@ One or more checks raised warnings.
 [10.137.198.225]: PS C:\Data>   
 ```
 
-## `IotEdge List`
+## `iotedge list`
 ```
 [10.137.198.225]: PS C:\Data> iotedge list                                                                                                                                                                                                                                     NAME             STATUS           DESCRIPTION      CONFIG
 iotedge-diag     stopped          Stopped          edgeshared.azurecr.io/microsoft/azureiotedge-diagnostics:20190503.11-windows-arm32v7
@@ -89,9 +90,9 @@ tempsensor       running          Up 21 minutes    edgeshared.azurecr.io/microso
 edgeHub          running          Up 23 minutes    edgeshared.azurecr.io/microsoft/azureiotedge-hub:20190503.11-windows-arm32v7
 ```
 
-# Appendix
+## `iotedge logs edgeAgent`
+The module name for `iotedge logs` should be the name you provided for the module when set modules in the hub portal. You can also get it from `iotedge list`
 
-## Sample IotEdge Logs output for edgeAgent
 ```
 [10.137.198.225]: PS C:\Data> iotedge logs edgeAgent --tail 20                                                                                                                                                                                                                 <6> 2019-05-07 16:50:45.976 -07:00 [INF] - Executing command: "Command Group: (\n  [Stop module edgeHub]\n  [Start module edgeHub]\n  [Saving edgeHub to store]\n)"
 <6> 2019-05-07 16:50:45.977 -07:00 [INF] - Executing command: "Stop module edgeHub"
@@ -114,7 +115,9 @@ edgeHub          running          Up 23 minutes    edgeshared.azurecr.io/microso
 <6> 2019-05-07 16:53:30.576 -07:00 [INF] - Updated reported properties
 <6> 2019-05-07 16:53:35.862 -07:00 [INF] - Updated reported properties
 ```
-## Sample IotEdge logs output for temp sensor module
+
+## `iotedge logs tempsensor`
+
 ```
 [10.137.198.225]: PS C:\Data> iotedge logs tempsensor --tail 5                                                                                                                                                                                                                         5/7/2019 4:57:15 PM> Sending message: 39, Body: [{"machine":{"temperature":41.311389315203471,"pressure":3.3139557447700154},"ambient":{"temperature":21.159575671264705,"humidity":25},"timeCreated":"2019-05-07T23:57:15.8722238Z"}]
         5/7/2019 4:57:20 PM> Sending message: 40, Body: [{"machine":{"temperature":41.75127328897419,"pressure":3.3640691088704773},"ambient":{"temperature":21.008210290460013,"humidity":26},"timeCreated":"2019-05-07T23:57:20.9173357Z"}]
