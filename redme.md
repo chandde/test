@@ -9,6 +9,8 @@
 `edgeshared.azurecr.io/microsoft/azureiotedge-diagnostics:20190503.11-windows-arm32v7`
 `edgeshared.azurecr.io/microsoft/azureiotedge-simulated-temperature-sensor:20190503.11-windows-arm32v7`
 
+it's recommended to set the diagnostics module Restart Policy as Never, and Desired Status as Stopped, so the module will be deployed but never started. We'll run the module manually from remote ps-session and check its result.
+
 Add credentials for the edgeshared container registry, username, password, and server, then submit the 4 modules
 
 # Deploy and run iotedge
