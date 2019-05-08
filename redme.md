@@ -11,7 +11,7 @@
 
 Add credentials for the edgeshared container registry, username, password, and server, then submit the 4 modules
 
-# Deploy and initialize iotedge
+# Deploy and run iotedge
 1.	Follow this link to enter remote ps-session for iotcore, https://docs.microsoft.com/en-us/windows/iot-core/connect-your-device/powershell
 2.	In the ps-session, download the iotedge daemon set up script
 
@@ -29,7 +29,8 @@ Add credentials for the edgeshared container registry, username, password, and s
 
 7.	Iotedge service should now pick up the edgeAgent module, run Get-IoTEdgeLog to see the service logs, also Get-Service IoTEdge to see the service status
 
-8. Run iotedge check with the deployed iotedge-diagnostics module
+## Run IoTEdge Check and other utils
+Run iotedge check with the deployed iotedge-diagnostics module
 ```
 [10.137.198.225]: PS C:\Data> iotedge check --diagnostics-image-name edgeshared.azurecr.io/microsoft/azureiotedge-diagnostics:20190503.11-windows-arm32v7 --verbose -c c:\data\programdata\iotedge\config.yaml                                                                 Configuration checks
 --------------------
@@ -75,6 +76,15 @@ Connectivity checks
 
 One or more checks raised warnings.
 [10.137.198.225]: PS C:\Data>   
+```
+
+## IotEdge List
+```
+[10.137.198.225]: PS C:\Data> iotedge list                                                                                                                                                                                                                                     NAME             STATUS           DESCRIPTION      CONFIG
+iotedge-diag     stopped          Stopped          edgeshared.azurecr.io/microsoft/azureiotedge-diagnostics:20190503.11-windows-arm32v7
+edgeAgent        running          Up 33 minutes    edgeshared.azurecr.io/microsoft/azureiotedge-agent:20190503.11-windows-arm32v7
+tempsensor       running          Up 21 minutes    edgeshared.azurecr.io/microsoft/azureiotedge-simulated-temperature-sensor:20190503.11-windows-arm32v7
+edgeHub          running          Up 23 minutes    edgeshared.azurecr.io/microsoft/azureiotedge-hub:20190503.11-windows-arm32v7
 ```
 
 # Appendix
