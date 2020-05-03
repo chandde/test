@@ -11526,24 +11526,43 @@ var react_hot_loader = __webpack_require__(4);
 class dialog_Dialog extends react_default.a.Component {
   constructor(props) {
     super(props);
-    this.ws = new WebSocket('ws://localhost:4010/');
+    this.state = {
+      text: undefined
+    };
+    this.ws = new WebSocket(`ws://localhost:4000${window.location.pathname}`);
 
     this.ws.onopen = () => {
-      jquery_default()('.wsConnectionStatusDiv').innerText = 'connected';
-    }; // this.onmessage = (event) => console.log('message from server: ', event.data);
+      const statusel = jquery_default()('.wsConnectionStatusDiv');
+      statusel.text('websocket connected');
+    };
 
+    this.ws.onmessage = event => {
+      console.log('message from server: ', event.data);
+      this.setState({
+        text: event.data
+      });
+    };
+  }
+
+  componentDidMount() {
+    jquery_default()('.inputTextArea').height(window.innerHeight - 80);
+    jquery_default()('.inputTextArea').width(window.innerWidth - 80);
   }
 
   onInput(e) {
     this.ws.send(e.target.value);
+    this.setState({
+      text: e.target.value
+    });
   }
 
   render() {
     return /*#__PURE__*/react_default.a.createElement("div", null, /*#__PURE__*/react_default.a.createElement("div", {
       className: "wsConnectionStatusDiv"
     }, "connecting..."), /*#__PURE__*/react_default.a.createElement("textarea", {
-      className: "myDialog",
-      onInput: this.onInput
+      className: "inputTextArea",
+      onInput: this.onInput.bind(this),
+      value: this.state.text
     }));
   }
 

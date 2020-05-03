@@ -1,16 +1,28 @@
-const WebSocket = require('ws');
+// const WebSocket = require('ws');
 
-export class WSS {
-  start() {
-    this.wss = new WebSocket.Server({ port: 3010 });
+// // create a id/wss map
+// export function createWsServer() {
+//     const map = new Map();
 
-    this.on('connection', function connection(ws) {
-      ws.on('message', function incoming(message) {
-        console.log('received from client', message);
-        ws.send('ack');
-      });
+//     const wss = new WebSocket.Server({ noServer: true });
 
-      ws.send('hello from server');
-    });
-  }
-}
+//     let cache;
+
+//     wss.on('connection', function connection(ws) {
+//         if (!_.find(wss.clients, client => client === ws)) {
+//             // new client, send cache to help it up to speed
+//             if (cache) {
+//                 ws.send(cache);
+//             }
+//         }
+
+//         ws.on('message', function incoming(data) {
+//             cache = data;
+//             wss.clients.forEach(function each(client) {
+//                 if (client !== ws && client.readyState === WebSocket.OPEN) {
+//                     client.send(data);
+//                 }
+//             });
+//         });
+//     });
+// }

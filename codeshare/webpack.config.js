@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin'); //installed via npm
 const webpack = require('webpack'); //to access built-in plugins
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
   module: {
@@ -18,13 +19,23 @@ module.exports = {
         }
       },
       { test: /\.txt$/, use: 'raw-loader' },
+      {
+        test: /\.scss|css$/,
+        use: [
+            { loader: MiniCssExtractPlugin.loader },
+            'css-loader',
+            'sass-loader'
+        ],
+      },
       // { test: /\.ts$/, use: 'ts-loader' }
     ]
   },
   optimization: {
     minimize: false
   },
-  // plugins: [
-  //   new HtmlWebpackPlugin({template: './dist/index.html'})
-  // ]
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+    }),
+  ]
 };
