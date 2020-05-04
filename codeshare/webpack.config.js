@@ -5,7 +5,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 module.exports = {
   entry: {
     main: './src/index.js',
-    newSession: './src/newSession.js',
+    newSession: './src/new-session-button.js',
   },
   module: {
     rules: [

@@ -3,12 +3,11 @@ import 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
-import { Dialog } from './dialog';
-// export { NewSessionButton } from "./newSession";
+import { SharedCodeBox } from './shared-code-box';
 
 ReactDOM.render(
   <AppContainer>
-    <Dialog />
+    <SharedCodeBox />
   </AppContainer>,
   document.querySelector('.app-root')
 );
@@ -16,8 +15,3 @@ ReactDOM.render(
 if (module.hot) {
   module.hot.accept();
 }
-
-// export {
-//   Dialog,
-//   NewSessionButton,
-// };

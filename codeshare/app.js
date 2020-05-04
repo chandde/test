@@ -3,35 +3,12 @@ const WebSocket = require('ws');
 const _ = require('lodash');
 const url = require('url');
 
-// const wss = new WebSocket.Server({ port: 4010 });
-
-// let cache;
-
 const wsMap = {};
 const cache = {};
-
-// wss.on('connection', function connection(ws) {
-//   if (!_.find(wss.clients, client => client === ws)) {
-//     // new client, send cache to help it up to speed
-//     if (cache) {
-//       ws.send(cache);
-//     }
-//   }
-
-//   ws.on('message', function incoming(data) {
-//     cache = data;
-//     wss.clients.forEach(function each(client) {
-//       if (client !== ws && client.readyState === WebSocket.OPEN) {
-//         client.send(data);
-//       }
-//     });
-//   });
-// });
 
 const router = express.Router();
 const app = express();
 
-// let httpServer;
 
 app.use(express.static('./dist/'));
 
