@@ -3,6 +3,10 @@ const webpack = require('webpack'); //to access built-in plugins
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
+  entry: {
+    main: './src/index.js',
+    newSession: './src/newSession.js',
+  },
   module: {
     rules: [
       {
@@ -28,7 +32,7 @@ module.exports = {
         ],
       },
       // { test: /\.ts$/, use: 'ts-loader' }
-    ]
+    ],
   },
   optimization: {
     minimize: false

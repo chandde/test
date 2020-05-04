@@ -36,8 +36,9 @@ const app = express();
 app.use(express.static('./dist/'));
 
 // homepage
-router.get('/', (req, res) => {
-  res.sendFile('index.html', { root: './dist/' });
+router.get('/home', (req, res) => {
+  console.log('received request for homepage');
+  res.sendFile('home.html', { root: './dist/' });
 });
 
 // subpages
@@ -71,12 +72,21 @@ router.get('/*', (req, res) => {
   res.sendFile('index.html', { root: './dist/' });
 });
 
+router.post('/newsession', function (req, res) {
+  // generate a new random session id, how to ensure it's really random?
+  console.log('received new session request');
+  const sessionId = Math.random().toString(36).slice(2);
+  console.log('respond with new session id ', sessionId);
+  res.set({ 'Content-Type': 'application/json' });
+  res.send({ newSessionId: sessionId });
+});
+
 app.use('/', router);
 
 const httpServer = app.listen(4000);
 
 httpServer.on('upgrade', function upgrade(request, socket, head) {
-  console.log(request);
+  // console.log(request);
   const pathname = url.parse(request.url).pathname;
   console.log(`received upgrade for ${pathname}`);
   if (pathname && pathname !== '/') {    

@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 11);
+/******/ 	return __webpack_require__(__webpack_require__.s = 13);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -11589,11 +11589,14 @@ function _interopDefault(e){return e&&"object"==typeof e&&"default"in e?e.defaul
 
 
 /***/ }),
-/* 11 */
+/* 11 */,
+/* 12 */,
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NewSessionButton", function() { return NewSessionButton; });
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(0);
@@ -11608,14 +11611,31 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
  // export { NewSessionButton } from "./newSession";
 
-react_dom__WEBPACK_IMPORTED_MODULE_2___default.a.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react_hot_loader__WEBPACK_IMPORTED_MODULE_3__["AppContainer"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_dialog__WEBPACK_IMPORTED_MODULE_4__[/* Dialog */ "a"], null)), document.querySelector('.app-root'));
+class NewSessionButton extends react__WEBPACK_IMPORTED_MODULE_1___default.a.Component {
+  generateNewSessionAndGo() {
+    const response = jquery__WEBPACK_IMPORTED_MODULE_0___default.a.ajax({
+      type: 'POST',
+      url: 'http://localhost:4000/newsession',
+      success: data => {
+        console.log(data);
+        window.location.assign(`/${data.newSessionId}`);
+      }
+    });
+  }
 
-if (false) {} // export {
-//   Dialog,
-//   NewSessionButton,
-// };
+  render() {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+      onClick: this.generateNewSessionAndGo
+    }, "Let's go");
+  }
+
+}
+react_dom__WEBPACK_IMPORTED_MODULE_2___default.a.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react_hot_loader__WEBPACK_IMPORTED_MODULE_3__["AppContainer"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(NewSessionButton, null)), document.querySelector('.newSessionButtonWrapper'));
+
+if (false) {}
 
 /***/ })
 /******/ ]);
