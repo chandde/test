@@ -31,9 +31,10 @@ exports.Database = class Database {
     console.log(`set mysql ${key}: ${value}`);
     const timeStamp = new Date().toJSON().slice(0, 19).replace('T', ' ');
     const start = new Date();
-    this.connection.query(`INSERT INTO codeshare (id, data, lastAccessTime)
-    VALUES ('${key}', '${value}', '${timeStamp}') 
-    ON DUPLICATE KEY UPDATE data = '${value}', lastAccessTime = '${timeStamp}';`, (error, results, fields) => {
+    this.connection.query(`
+      INSERT INTO codeshare (id, data, lastAccessTime)
+      VALUES ('${key}', '${value}', '${timeStamp}') 
+      ON DUPLICATE KEY UPDATE data = '${value}', lastAccessTime = '${timeStamp}';`, (error, results, fields) => {
       console.log(`took ${new Date() - start} to set mysql`);
       // to do: update table failure
     });
