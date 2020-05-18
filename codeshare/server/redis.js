@@ -8,7 +8,9 @@ exports.Cache = class Cache {
   }
 
   async get(key, found, notFound) {
+    const start = new Date();
     this.redisClient.get(key, (err, value) => {
+      console.log(`took ${new Date() - start} to get redis`);
       if(err || value == null || value == undefined) {
         console.log(err);
         notFound(err);
@@ -21,6 +23,9 @@ exports.Cache = class Cache {
 
   set(key, value) {
     console.log(`set redis ${key}: ${value}`)
-    this.redisClient.set(key, value);
+    const start = new Date();
+    this.redisClient.set(key, value, () => {
+      console.log(`took ${new Date() - start} to set redis`);
+    });
   }
 }

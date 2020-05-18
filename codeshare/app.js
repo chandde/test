@@ -2,13 +2,8 @@ const express = require('express');
 const WebSocket = require('ws');
 const _ = require('lodash');
 const url = require('url');
-
-// import Cache from './server/redis';
 const WsManager = require('./server/websocket.js');
-// import { Database } from './server/mysql';
-
 const wsManager = new WsManager.WsManager();
-
 const router = express.Router();
 
 // homepage
@@ -30,14 +25,15 @@ router.get('/*', (req, res) => {
 });
 
 router.post('/newsession', function (req, res) {
-  // generate a new random session id, how to ensure it's really random?
+  // TO DO: how to ensure it's really random?
+  // at least check sql server to avoid dup? 
   console.log('received new session request');
   const sessionId = Math.random().toString(36).slice(2);
   console.log('respond with new session id ', sessionId);
   res.set({ 'Content-Type': 'application/json' });
   res.send({ newSessionId: sessionId });
 
-  // should we instantiate the ws server in advance
+  // TO DO should we instantiate the ws server in advance
 });
 
 const app = express();

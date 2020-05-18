@@ -16,7 +16,7 @@ exports.WsManager = class WsManager {
     if(this.wsMap[chatId]) {
       return;
     }
-    
+
     this.wsMap[chatId] = new WebSocket.Server({ noServer: true });
     // console.log(this.wsMap);
     this.wsMap[chatId].on('connection', (ws) => {
@@ -44,13 +44,12 @@ exports.WsManager = class WsManager {
         console.log(`received new data for ${chatId}: ${data}`);
         this.cache.set(chatId, data);
         this.wsMap[chatId].clients.forEach(function each(client) {
-          console.log(`broadcast new data for ${chatId}: ${data}`);
+          // console.log(`broadcast new data for ${chatId}: ${data}`);
           if (client !== ws && client.readyState === WebSocket.OPEN) {
             client.send(data);
           }
         });
-
-        // update database for permanent storage
+        
         this.database.set(chatId, data);
       });
     });
