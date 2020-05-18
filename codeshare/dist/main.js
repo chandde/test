@@ -11529,20 +11529,33 @@ class shared_code_box_SharedCodeBox extends react_default.a.Component {
   constructor(props) {
     super(props);
     this.state = {
-      text: undefined,
+      statusText: 'connecting...',
       style: 'plaintext'
     };
     this.ws = new WebSocket(`ws://localhost:4000${window.location.pathname}`);
 
     this.ws.onopen = () => {
-      const statusel = jquery_default()('.wsConnectionStatusDiv');
-      statusel.text('websocket connected');
+      this.setState({
+        statusText: 'connected'
+      });
     };
 
     this.ws.onmessage = event => {
       console.log('message from server: ', event.data);
       this.setState({
         text: event.data
+      });
+    };
+
+    this.ws.onclose = () => {
+      this.setState({
+        statusText: 'disconnected'
+      });
+    };
+
+    this.ws.onerror = err => {
+      this.setState({
+        statusText: JSON.stringify(err)
       });
     };
   }
@@ -11574,7 +11587,7 @@ class shared_code_box_SharedCodeBox extends react_default.a.Component {
   render() {
     return /*#__PURE__*/react_default.a.createElement("div", null, /*#__PURE__*/react_default.a.createElement("div", {
       className: "wsConnectionStatusDiv"
-    }, "connecting..."), /*#__PURE__*/react_default.a.createElement("div", {
+    }, this.state.statusText), /*#__PURE__*/react_default.a.createElement("div", {
       className: "codeStyleingControlButtons"
     }), /*#__PURE__*/react_default.a.createElement("textarea", {
       className: "inputTextArea" // {`inputTextArea ${this.state.style}`}

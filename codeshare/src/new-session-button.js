@@ -9,7 +9,7 @@ export class NewSessionButton extends React.Component {
     generateNewSessionAndGo() {
         const response = $.ajax({
             type: 'POST',
-            url: 'http://localhost:4000/newsession',
+            url: `http://${window.location.host}/newsession`,
             success: (data) => {
                 console.log(data);
                 window.location.assign(`/${data.newSessionId}`);

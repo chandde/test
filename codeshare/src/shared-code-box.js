@@ -6,14 +6,15 @@ export class SharedCodeBox extends React.Component {
     super(props);
 
     this.state = {
-      text: undefined,
+      statusText: 'connecting...',
       style: 'plaintext',
     };
 
     this.ws = new WebSocket(`ws://localhost:4000${window.location.pathname}`);
     this.ws.onopen = () => {
-      const statusel = $('.wsConnectionStatusDiv')
-      statusel.text('websocket connected');
+      this.setState({
+        statusText: 'connected',
+      });
     };
     this.ws.onmessage = (event) => {
       console.log('message from server: ', event.data)
@@ -21,6 +22,16 @@ export class SharedCodeBox extends React.Component {
         text: event.data,
       });
     };
+    this.ws.onclose = () => {
+      this.setState({
+        statusText: 'disconnected',
+      });
+    }
+    this.ws.onerror = (err) => {
+      this.setState({
+        statusText: JSON.stringify(err),
+      });      
+    }
   }
 
   componentDidMount() {
@@ -52,7 +63,7 @@ export class SharedCodeBox extends React.Component {
   render() {    
     return (<div>
       <div className="wsConnectionStatusDiv">
-        connecting...
+        {this.state.statusText}
       </div>
       <div className="codeStyleingControlButtons">
         {/* <button onClick={this.styleChanged.bind(this)}>text</button>
