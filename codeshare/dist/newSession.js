@@ -11523,7 +11523,7 @@ class NewSessionButton extends react__WEBPACK_IMPORTED_MODULE_1___default.a.Comp
   generateNewSessionAndGo() {
     const response = jquery__WEBPACK_IMPORTED_MODULE_0___default.a.ajax({
       type: 'POST',
-      url: 'http://localhost:4000/newsession',
+      url: `http://${window.location.host}/newsession`,
       success: data => {
         console.log(data);
         window.location.assign(`/${data.newSessionId}`);

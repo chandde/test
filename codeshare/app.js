@@ -40,7 +40,7 @@ const app = express();
 app.use(express.static('./dist/'));
 app.use('/', router);
 
-const httpServer = app.listen(4000);
+const httpServer = app.listen(process.env.PORT);
 
 httpServer.on('upgrade', function upgrade(request, socket, head) {
   const chatId = url.parse(request.url).pathname.substring(1);
