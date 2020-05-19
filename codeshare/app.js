@@ -7,6 +7,12 @@ const wsManager = new WsManager.WsManager();
 const router = express.Router();
 
 // homepage
+router.get('/', (req, res) => {
+  console.log('received request for homepage');
+  res.sendFile('home.html', { root: './dist/' });
+});
+
+// homepage
 router.get('/home', (req, res) => {
   console.log('received request for homepage');
   res.sendFile('home.html', { root: './dist/' });
@@ -16,7 +22,7 @@ router.get('/home', (req, res) => {
 router.get('/*', (req, res) => {
   const connectionId = req.originalUrl.substring(1);
   console.log(`request for page ${connectionId} received`);
-  if (connectionId && connectionId.indexOf('wss/') === 0) {
+  if (connectionId) {
     const wssId = connectionId.substring(4);
     wsManager.createConnection(wssId);
     console.log(`create new wss for ${wssId}`);
