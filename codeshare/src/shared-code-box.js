@@ -10,6 +10,10 @@ export class SharedCodeBox extends React.Component {
       style: 'plaintext',
     };
 
+    this.createWsConnection();
+  }
+
+  createWsConnection() {
     this.ws = new WebSocket(`ws://${window.location.host}:4000/wss${window.location.pathname}`);
     this.ws.onopen = () => {
       this.setState({
@@ -22,15 +26,24 @@ export class SharedCodeBox extends React.Component {
         text: event.data,
       });
     };
-    this.ws.onclose = () => {
-      this.setState({
-        statusText: 'disconnected',
-      });
-    }
     this.ws.onerror = (err) => {
       this.setState({
         statusText: JSON.stringify(err),
       });      
+    }    
+    this.ws.onclose = () => {
+      let countDown = 5000;
+      const retryWorker = () => {
+        if (countDown <= 0) {
+          this.createWsConnection();
+          return;
+        }
+        this.setState({
+          statusText: `disconnected, reconnect in ${countDown/1000} seconds`,
+        });
+        countDown -= 1000;
+      };
+      setTimeout(retryWorker, countDown);
     }
   }
 
