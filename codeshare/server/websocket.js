@@ -57,6 +57,10 @@ exports.WsManager = class WsManager {
   }
 
   handleUpgrade(connectionId, request, socket, head) {
+    // the client may request a ws connection the server does not have
+    // in which case we need to first build the ws connection
+    this.createConnection(connectionId);
+
     console.log(`WsManager.handleUpgrade for ${connectionId}`);
     this.wsMap[connectionId].handleUpgrade(request, socket, head, (ws) => {
       this.wsMap[connectionId].emit('connection', ws, request);
