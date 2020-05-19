@@ -47,7 +47,7 @@ httpServer.on('upgrade', function upgrade(request, socket, head) {
   const path = url.parse(request.url).pathname.substring(1);
   if (path && path.indexOf('wss/') === 0) {
     const connectionId = path.substring(4);
-    console.log(`dispatch connection event for ${connectionId}`);
+    console.log(`dispatch upgrade for ${connectionId}`);
     wsManager.handleUpgrade(connectionId, request, socket, head);
   } else {
     socket.destroy();

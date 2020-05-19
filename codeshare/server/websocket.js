@@ -56,6 +56,7 @@ exports.WsManager = class WsManager {
   }
 
   handleUpgrade(connectionId, request, socket, head) {
+    console.log(`WsManager.handleUpgrade for ${connectionId}`);
     this.wsMap[connectionId].handleUpgrade(request, socket, head, (ws) => {
       this.wsMap[connectionId].emit('connection', ws, request);
     });
