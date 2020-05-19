@@ -10,7 +10,7 @@ export class SharedCodeBox extends React.Component {
       style: 'plaintext',
     };
 
-    this.ws = new WebSocket(`ws://${window.location.host}/wss${window.location.pathname}`);
+    this.ws = new WebSocket(`ws://${window.location.host}:4000/wss${window.location.pathname}`);
     this.ws.onopen = () => {
       this.setState({
         statusText: 'connected',
