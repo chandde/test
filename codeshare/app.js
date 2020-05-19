@@ -14,10 +14,10 @@ router.get('/home', (req, res) => {
 
 // subpages
 router.get('/*', (req, res) => {
-  const chatId = req.originalUrl.substring(1);
-  console.log(`request for page ${chatId} received`);
-  if (chatId && chatId.indexOf('wss/') === 0) {
-    const wssId = chatId.substring(4);
+  const connectionId = req.originalUrl.substring(1);
+  console.log(`request for page ${connectionId} received`);
+  if (connectionId && connectionId.indexOf('wss/') === 0) {
+    const wssId = connectionId.substring(4);
     wsManager.createConnection(wssId);
     console.log(`create new wss for ${wssId}`);
   }
@@ -44,11 +44,11 @@ app.use('/', router);
 const httpServer = app.listen(process.env.PORT);
 
 httpServer.on('upgrade', function upgrade(request, socket, head) {
-  const chatId = url.parse(request.url).pathname.substring(1);
-  if (chatId && chatId.indexOf('wss/') === 0) {
-    const wssId = chatId.substring(4);
-    console.log(`dispatch connection event for ${wssId}`);
-    wsManager.handleUpgrade(wssId, request, socket, head);
+  const path = url.parse(request.url).pathname.substring(1);
+  if (path && path.indexOf('wss/') === 0) {
+    const connectionId = path.substring(4);
+    console.log(`dispatch connection event for ${connectionId}`);
+    wsManager.handleUpgrade(connectionId, request, socket, head);
   } else {
     socket.destroy();
   }

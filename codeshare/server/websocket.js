@@ -11,53 +11,53 @@ exports.WsManager = class WsManager {
     this.wsMap = {};
   }
 
-  createConnection(chatId) {
+  createConnection(connectionId) {
     // ignore existing chats
-    if(this.wsMap[chatId]) {
+    if(this.wsMap[connectionId]) {
       return;
     }
 
-    this.wsMap[chatId] = new WebSocket.Server({ noServer: true });
+    this.wsMap[connectionId] = new WebSocket.Server({ noServer: true });
     // console.log(this.wsMap);
-    this.wsMap[chatId].on('connection', (ws) => {
-      if (!_.find(this.wsMap[chatId].clients, client => client === ws)) {
+    this.wsMap[connectionId].on('connection', (ws) => {
+      if (!_.find(this.wsMap[connectionId].clients, client => client === ws)) {
         // this is a new client to an existing chat
         // try to get cache, if no cache, talk to sql and update cache
         // if not found in sql, return empty
-        this.cache.get(chatId, (value) => {
-          console.log(`found in redis ${chatId}: ${value}`)
+        this.cache.get(connectionId, (value) => {
+          console.log(`found in redis ${connectionId}: ${value}`)
           ws.send(value);
         }, () => {
-          console.log(`not found in redis ${chatId}`)
+          console.log(`not found in redis ${connectionId}`)
           // cache not found, talk to db
-          this.database.get(chatId, (value1) => {
-            console.log(`found in mysql ${chatId}: ${value1}`)
-            this.cache.set(chatId, value1);
+          this.database.get(connectionId, (value1) => {
+            console.log(`found in mysql ${connectionId}: ${value1}`)
+            this.cache.set(connectionId, value1);
             ws.send(value1);
           }, () => {
-            console.log(`not found in mysql ${chatId}`)
+            console.log(`not found in mysql ${connectionId}`)
           });
         });
       }
 
       ws.on('message', (data) => {
-        console.log(`received new data for ${chatId}: ${data}`);
-        this.cache.set(chatId, data);
-        this.wsMap[chatId].clients.forEach(function each(client) {
-          // console.log(`broadcast new data for ${chatId}: ${data}`);
+        console.log(`received new data for ${connectionId}: ${data}`);
+        this.cache.set(connectionId, data);
+        this.wsMap[connectionId].clients.forEach(function each(client) {
+          // console.log(`broadcast new data for ${connectionId}: ${data}`);
           if (client !== ws && client.readyState === WebSocket.OPEN) {
             client.send(data);
           }
         });
         
-        this.database.set(chatId, data);
+        this.database.set(connectionId, data);
       });
     });
   }
 
-  handleUpgrade(chatId, request, socket, head) {
-    this.wsMap[chatId].handleUpgrade(request, socket, head, (ws) => {
-      this.wsMap[chatId].emit('connection', ws, request);
+  handleUpgrade(connectionId, request, socket, head) {
+    this.wsMap[connectionId].handleUpgrade(request, socket, head, (ws) => {
+      this.wsMap[connectionId].emit('connection', ws, request);
     });
   }
 };
