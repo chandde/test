@@ -42,8 +42,9 @@ export class SharedCodeBox extends React.Component {
           statusText: `disconnected, reconnect in ${countDown/1000} seconds`,
         });
         countDown -= 1000;
+        setTimeout(retryWorker, 1000);
       };
-      setTimeout(retryWorker, countDown);
+      setTimeout(retryWorker, 1000);
     }
   }
 
