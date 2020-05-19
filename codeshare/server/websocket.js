@@ -12,6 +12,7 @@ exports.WsManager = class WsManager {
   }
 
   createConnection(connectionId) {
+    console.log(`WsManager.createConnection for ${connectionId}`);
     // ignore existing chats
     if(this.wsMap[connectionId]) {
       return;
