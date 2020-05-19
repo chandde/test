@@ -23,9 +23,8 @@ router.get('/*', (req, res) => {
   const connectionId = req.originalUrl.substring(1);
   console.log(`request for page ${connectionId} received`);
   if (connectionId) {
-    const wssId = connectionId.substring(4);
-    wsManager.createConnection(wssId);
-    console.log(`create new wss for ${wssId}`);
+    wsManager.createConnection(connectionId);
+    console.log(`create new wss for ${connectionId}`);
   }
 
   res.sendFile('index.html', { root: './dist/' });
