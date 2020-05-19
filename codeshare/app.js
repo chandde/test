@@ -16,9 +16,10 @@ router.get('/home', (req, res) => {
 router.get('/*', (req, res) => {
   const chatId = req.originalUrl.substring(1);
   console.log(`request for page ${chatId} received`);
-  if (chatId && !wsManager[chatId] && chatId != 'home' && chatId != 'favicon.ico') {
-    wsManager.createConnection(chatId); 
-    console.log(`create new wss for ${chatId}`);
+  if (chatId && chatId.indexOf('wss/') === 0) {
+    const wssId = chatId.substring(4);
+    wsManager.createConnection(wssId);
+    console.log(`create new wss for ${wssId}`);
   }
 
   res.sendFile('index.html', { root: './dist/' });
@@ -44,10 +45,10 @@ const httpServer = app.listen(process.env.PORT);
 
 httpServer.on('upgrade', function upgrade(request, socket, head) {
   const chatId = url.parse(request.url).pathname.substring(1);
-  console.log(`received upgrade for ${chatId}`);
-  if (chatId && chatId != 'home' && chatId != 'favicon.ico') {
-    console.log(`dispatch connection event for ${chatId}`);
-    wsManager.handleUpgrade(chatId, request, socket, head);
+  if (chatId && chatId.indexOf('wss/') === 0) {
+    const wssId = chatId.substring(4);
+    console.log(`dispatch connection event for ${wssId}`);
+    wsManager.handleUpgrade(wssId, request, socket, head);
   } else {
     socket.destroy();
   }
