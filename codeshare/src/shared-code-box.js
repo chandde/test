@@ -60,6 +60,10 @@ export class SharedCodeBox extends React.Component {
     });
   }
 
+  onKeyPress(e) {
+    console.log(e);
+  }
+
   // styleChanged(e) {
   //   const languageMap = {
   //     text: 'plaintext',
@@ -89,6 +93,7 @@ export class SharedCodeBox extends React.Component {
       <textarea
         className='inputTextArea' // {`inputTextArea ${this.state.style}`}
         onInput={this.onInput.bind(this)}
+        onKeyPress={this.onKeyPress.bind(this)}
         value={this.state.text}
         id='textbox'
       />
