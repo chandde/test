@@ -59,7 +59,7 @@ export class SharedCodeBox extends React.Component {
   }
 
   componentDidMount() {
-    // window.addEventListener('resize', _.debounce(this.handleResize.bind(this), 50));
+    window.addEventListener('resize', _.debounce(this.handleResize.bind(this), 50));
   }
   
   // calculateDiff(prev, current) {
@@ -82,6 +82,7 @@ export class SharedCodeBox extends React.Component {
   // }
 
   onInput(e) {
+    e.persist();
     // const current = e.target.value;
     // const prev = this.state.text;
     // let diff;
@@ -132,8 +133,7 @@ export class SharedCodeBox extends React.Component {
         // onKeyPress={this.onKeyPress.bind(this)}
         value={this.state.text}
         id='textbox'
-        // style={ { height: this.state.height, width : this.state.width } }
-        style={{ height: 400, width: 400 }}
+        style={ { height: this.state.height, width : this.state.width } }
       />
     </div>
     );
