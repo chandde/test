@@ -1,5 +1,6 @@
 import React from 'react';
 import $ from 'jquery';
+import _ from 'lodash';
 
 export class SharedCodeBox extends React.Component {
   constructor(props) {
@@ -8,6 +9,8 @@ export class SharedCodeBox extends React.Component {
     this.state = {
       statusText: 'connecting...',
       style: 'plaintext',
+      width: window.innerWidth - 50,
+      height: window.innerHeight - 50,
     };
 
     this.createWsConnection();
@@ -47,13 +50,49 @@ export class SharedCodeBox extends React.Component {
       setTimeout(retryWorker, 1000);
     }
   }
+  
+  handleResize() {
+    this.setState({
+      width: window.innerWidth - 50,
+      height: window.innerHeight - 50,
+    });
+  }
 
   componentDidMount() {
     $('.inputTextArea').height(window.innerHeight - 80);
     $('.inputTextArea').width(window.innerWidth - 80);
+
+    window.addEventListener('resize', _.debounce(this.handleResize, 500));
+  }
+  
+  calculateDiff(prev, current) {
+    const length = Math.min(prev.length, current.length);
+    let left = 0;
+    for(; left < length.length; ++left) {
+      if(prev[left] == current[left]) {
+        continue;
+      }
+    }
+
+    let right = length - 1;
+    for(; right >= left; --right) {
+      if(prev[right] == current[right + current.length - prev.length]) {
+        continue;
+      }
+    }
+
+    return longer.substring(left, right - left + 1);
   }
 
   onInput(e) {
+    // const current = e.target.value;
+    // const prev = this.state.text;
+    // let diff;
+    // if (current.length > prev.length) {
+    //   diff = { change: this.calculateDiff(prev, current), op: 'Add' };
+    // } else {
+    //   diff = { change: this.calculateDiff(current, prev), op: 'Remove' };      
+    // }
     this.ws.send(e.target.value);
     this.setState({
       text: e.target.value,
@@ -92,10 +131,11 @@ export class SharedCodeBox extends React.Component {
       </div>
       <textarea
         className='inputTextArea' // {`inputTextArea ${this.state.style}`}
-        onInput={this.onInput.bind(this)}
-        onKeyPress={this.onKeyPress.bind(this)}
+        onInput={_.debounce(this.onInput.bind(this), 1000)}
+        // onKeyPress={this.onKeyPress.bind(this)}
         value={this.state.text}
         id='textbox'
+        style={ { height: this.state.height, width = this.state.width } }
       />
     </div>
     );
