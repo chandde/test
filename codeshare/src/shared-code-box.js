@@ -59,9 +59,6 @@ export class SharedCodeBox extends React.Component {
   }
 
   componentDidMount() {
-    $('.inputTextArea').height(window.innerHeight - 80);
-    $('.inputTextArea').width(window.innerWidth - 80);
-
     window.addEventListener('resize', _.debounce(this.handleResize.bind(this), 50));
   }
   
