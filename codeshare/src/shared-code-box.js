@@ -82,7 +82,7 @@ export class SharedCodeBox extends React.Component {
   // }
 
   onInput(e) {
-    e.persist();
+    // e.persist();
     // const current = e.target.value;
     // const prev = this.state.text;
     // let diff;
@@ -129,7 +129,7 @@ export class SharedCodeBox extends React.Component {
       </div>
       <textarea
         className='inputTextArea' // {`inputTextArea ${this.state.style}`}
-        onInput={_.debounce(this.onInput.bind(this), 200)}
+        onInput={this.onInput.bind(this)}
         // onKeyPress={this.onKeyPress.bind(this)}
         value={this.state.text}
         id='textbox'
