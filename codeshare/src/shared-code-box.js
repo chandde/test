@@ -132,7 +132,8 @@ export class SharedCodeBox extends React.Component {
         // onKeyPress={this.onKeyPress.bind(this)}
         value={this.state.text}
         id='textbox'
-        style={ { height: this.state.height, width : this.state.width } }
+        // style={ { height: this.state.height, width : this.state.width } }
+        style={{ height: 400, width: 400 }}
       />
     </div>
     );
