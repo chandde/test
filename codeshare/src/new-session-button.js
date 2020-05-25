@@ -12,7 +12,7 @@ export class NewSessionButton extends React.Component {
             url: `http://${window.location.host}/newsession`,
             success: (data) => {
                 console.log(data);
-                window.location.assign(`/${data.newSessionId}`);
+                window.location.assign(`/pad?id=${data.newSessionId}`);
             },
         });
     }

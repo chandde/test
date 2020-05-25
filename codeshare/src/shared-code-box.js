@@ -17,40 +17,44 @@ export class SharedCodeBox extends React.Component {
   }
 
   createWsConnection() {
-    this.ws = new WebSocket(`ws://${window.location.host}:4000/wss${window.location.pathname}`);
+    // 4000 is the port of nginx websocket proxy
+    const id = new URLSearchParams(window.location.search).get('id');
+    if (!id) {
+      return;
+    }
+
+    this.ws = new WebSocket(`ws://${window.location.host}:4000/wss/${id}`);
+    // if (!this.ws) {
+    //   this.setState({
+    //     statusText: 'Fail to connect',
+    //   });
+    // }
+
     this.ws.onopen = () => {
+      console.log('this.ws.onopen');
       this.setState({
         statusText: 'connected',
       });
     };
     this.ws.onmessage = (event) => {
-      console.log('message from server: ', event.data)
+      console.log('this.ws.onmessage: ', event.data)
       this.setState({
         text: event.data,
       });
     };
-    this.ws.onerror = (err) => {
+    this.ws.onerror = _.debounce((err) => {
+      console.log('this.ws.onerror');
       this.setState({
         statusText: JSON.stringify(err),
-      });      
-    }    
-    this.ws.onclose = () => {
-      let countDown = 5000;
-      const retryWorker = () => {
-        if (countDown <= 0) {
-          this.createWsConnection();
-          return;
-        }
-        this.setState({
-          statusText: `disconnected, reconnect in ${countDown/1000} seconds`,
-        });
-        countDown -= 1000;
-        setTimeout(retryWorker, 1000);
-      };
-      setTimeout(retryWorker, 1000);
-    }
+      });
+    }, 500);
+    this.ws.onclose = _.debounce(() => {
+      console.log('this.ws.onclose');
+      // auto reconnect on close
+      this.createWsConnection();
+    }, 500);
   }
-  
+
   handleResize() {
     this.setState({
       width: window.innerWidth - 50,
@@ -61,7 +65,7 @@ export class SharedCodeBox extends React.Component {
   componentDidMount() {
     window.addEventListener('resize', _.debounce(this.handleResize.bind(this), 50));
   }
-  
+
   // calculateDiff(prev, current) {
   //   const length = Math.min(prev.length, current.length);
   //   let left = 0;
@@ -109,13 +113,13 @@ export class SharedCodeBox extends React.Component {
   //     'c#': 'language-cs',
   //     java: 'language-java',
   //   };
-    
+
   //   if (languageMap[e.target.innerText] !== this.state.style) {
   //     this.setState({ style: languageMap[e.target.innerText] });
   //   }
   // }
 
-  render() {    
+  render() {
     return (<div>
       <div className="wsConnectionStatusDiv">
         {this.state.statusText}
@@ -133,7 +137,7 @@ export class SharedCodeBox extends React.Component {
         // onKeyPress={this.onKeyPress.bind(this)}
         value={this.state.text}
         id='textbox'
-        style={ { height: this.state.height, width : this.state.width } }
+        style={{ height: this.state.height, width: this.state.width }}
       />
     </div>
     );
