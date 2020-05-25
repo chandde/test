@@ -15,7 +15,7 @@ export class NewSessionButton extends React.Component {
                 window.location.assign(`/pad?id=${data.newSessionId}`);
             },
         });
-    }
+    } 
 
     render() {
         return <button
