@@ -4,7 +4,7 @@ exports.Database = class Database {
   constructor() {
     console.log('Database ctor');
     this.connection = mysql.createConnection({
-      host: '192.168.1.123',
+      host: 'localhost',
       user: 'codeshare1',
       password: '123456',
       database: 'codeshare'

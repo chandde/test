@@ -4,7 +4,7 @@ const redis = require("redis");
 exports.Cache = class Cache {
   constructor() {
     console.log('Cache ctor');
-    this.redisClient = redis.createClient(6379, '192.168.1.123');
+    this.redisClient = redis.createClient(6379, 'localhost');
   }
 
   async get(key, found, notFound) {
