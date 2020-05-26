@@ -32,18 +32,16 @@ router.get('/pad', (req, res) => {
   res.sendFile('pad.html', { root: './dist/' });
 });
 
-// homepage
-// router.get('/', (req, res) => {
-//   console.log('received request for homepage');
-//   res.sendFile('index.html', { root: './dist/' });
-// });
-
 const app = express();
-// app.disable('etag');
 app.use(express.static('./dist/'));
 app.use('/', router);
 
-const httpServer = app.listen(process.env.PORT);
+// node app.js 4001
+// node argv[0]
+// app.js argv[1]
+// 40001 argv[2]
+console.log(`listening on port ${process.argv[2]}`);
+const httpServer = app.listen(process.argv[2], '0.0.0.0');
 
 httpServer.on('upgrade', function upgrade(request, socket, head) {
   console.log(`received upgrade for ${request.url}`);

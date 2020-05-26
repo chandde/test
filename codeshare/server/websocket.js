@@ -15,6 +15,7 @@ exports.WsManager = class WsManager {
     console.log(`WsManager.createConnection for ${connectionId}`);
     // ignore existing chats
     if(this.wsMap[connectionId]) {
+      console.log(`${connectionId} is found in map, no need to create new server`);
       return;
     }
 
@@ -53,6 +54,15 @@ exports.WsManager = class WsManager {
         
         this.database.set(connectionId, data);
       });
+
+      ws.on('close', () => {
+        console.log(`this is ${this.wsMap[connectionId].clients.size} clients connecting to ${connectionId}`);
+        if(this.wsMap[connectionId].clients.size === 0) {
+          console.log(`no clients connecting to ${connectionId}, clean up and close server connection`);
+          this.wsMap[connectionId].close();
+          delete this.wsMap[connectionId];
+        }
+      })
     });
   }
 
