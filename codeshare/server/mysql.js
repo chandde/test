@@ -16,7 +16,7 @@ exports.Database = class Database {
     const start = new Date();
     this.connection.query(`SELECT * FROM codeshare WHERE id = '${key}'`,
     (error, results, fields) => {
-      console.log(`took ${new Date() - start} to get mysql`);
+      console.log(`took ${new Date() - start}ms to get mysql`);
       if(error || (results && !results[0])) {
         // if sql server returns error or empty output
         notFound();
@@ -35,7 +35,7 @@ exports.Database = class Database {
       INSERT INTO codeshare (id, data, lastAccessTime)
       VALUES ('${key}', '${value}', '${timeStamp}') 
       ON DUPLICATE KEY UPDATE data = '${value}', lastAccessTime = '${timeStamp}';`, (error, results, fields) => {
-      console.log(`took ${new Date() - start} to set mysql`);
+      console.log(`took ${new Date() - start}ms to set mysql`);
       // to do: update table failure
     });
   }

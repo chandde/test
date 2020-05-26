@@ -28701,7 +28701,8 @@ class shared_code_box_SharedCodeBox extends react_default.a.Component {
       statusText: 'connecting...',
       style: 'plaintext',
       width: window.innerWidth - 50,
-      height: window.innerHeight - 50
+      height: window.innerHeight - 50,
+      text: ''
     };
     this.createWsConnection();
   }
@@ -28756,34 +28757,31 @@ class shared_code_box_SharedCodeBox extends react_default.a.Component {
 
   componentDidMount() {
     window.addEventListener('resize', lodash_default.a.debounce(this.handleResize.bind(this), 50));
-  } // calculateDiff(prev, current) {
-  //   const length = Math.min(prev.length, current.length);
-  //   let left = 0;
-  //   for(; left < length.length; ++left) {
-  //     if(prev[left] == current[left]) {
-  //       continue;
-  //     }
-  //   }
-  //   let right = length - 1;
-  //   for(; right >= left; --right) {
-  //     if(prev[right] == current[right + current.length - prev.length]) {
-  //       continue;
-  //     }
-  //   }
-  //   return longer.substring(left, right - left + 1);
-  // }
-
+  }
 
   onInput(e) {
-    // e.persist();
-    // const current = e.target.value;
-    // const prev = this.state.text;
-    // let diff;
-    // if (current.length > prev.length) {
-    //   diff = { change: this.calculateDiff(prev, current), op: 'Add' };
-    // } else {
-    //   diff = { change: this.calculateDiff(current, prev), op: 'Remove' };      
+    // calculate changes
+    const oldText = this.state.text;
+    const newText = e.target.value; // let left = 0;
+    // const minLength = Math.min(oldText.length, newText.length);
+    // for (; left < minLength; left++) {
+    //   if (oldText[left] !== newText[left]) {
+    //     break;
+    //   }
     // }
+    // let oldright = oldText.length;
+    // let newright = newText.length;
+    // for (; oldright >= left && newright >= left; oldright--, newright--) {
+    //   if (oldText[oldright] !== newText[newright]) {
+    //     break;
+    //   }
+    // }
+    // const payload = {
+    //   start: left,
+    //   length: oldright - left + 1,
+    //   change: newText.substring(left, newright - left + 1),
+    // }
+
     this.ws.send(e.target.value);
     this.setState({
       text: e.target.value
@@ -28814,8 +28812,7 @@ class shared_code_box_SharedCodeBox extends react_default.a.Component {
     }), /*#__PURE__*/react_default.a.createElement("textarea", {
       className: "inputTextArea" // {`inputTextArea ${this.state.style}`}
       ,
-      onInput: this.onInput.bind(this) // onKeyPress={this.onKeyPress.bind(this)}
-      ,
+      onInput: this.onInput.bind(this),
       value: this.state.text,
       id: "textbox",
       style: {
