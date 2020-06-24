@@ -1,7 +1,7 @@
 const express = require('express');
 const proxy = require('express-request-proxy');
 const app = express();
-const port = 8000;
+// const port = 8000;
 
 // redirect
 // app.use('/pages/*', (req, res) => {
@@ -78,4 +78,4 @@ app.use(
 //     }
 // }));
 
-app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`));
+app.listen(443, () => console.log(`server started`));
