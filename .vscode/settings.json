@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/c19b8295-a9b7-41f4-a34c-7b39b46fcba1/resourceGroups/appsvc_windows_centralus/providers/Microsoft.Web/sites/chandlerdenguiproxy",
+    "appService.deploySubpath": "uiserver"
+}
