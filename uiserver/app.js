@@ -54,6 +54,16 @@ app.use(
     })
 );
 
+const greeting = 'Welcome to Microsoft Ads Smart Page! It seems you do not have a smart page created. Please create a new account or sign into https://ads.microsoft.com/ to start!';
+
+app.use('/', (req, res) => {
+    res.send(greeting);
+});
+
+app.use('/home', (req, res) => {
+    res.send(greeting);
+});
+
 // proxy
 
 // app.use('/notfound', (req, res) => {
@@ -78,4 +88,4 @@ app.use(
 //     }
 // }));
 
-app.listen(80, () => console.log(`server started`));
+app.listen(8080, () => console.log(`server started`));
