@@ -6,7 +6,7 @@ app.use(
     "/pages/:l1/:l2/:l3/:l4",
     proxy({
         cache: false,
-        url: 'https://chandler123456.z13.web.core.windows.net/:l1/:l2/:l3/:l4',
+        url: 'https://bingadssmartpagetest.z19.web.core.windows.net/:l1/:l2/:l3/:l4',
     })
 );
 
@@ -14,7 +14,7 @@ app.use(
     "/pages/:l1/:l2/:l3",
     proxy({
         cache: false,
-        url: 'https://chandler123456.z13.web.core.windows.net/:l1/:l2/:l3',
+        url: 'https://bingadssmartpagetest.z19.web.core.windows.net/:l1/:l2/:l3',
     })
 );
 
@@ -22,7 +22,7 @@ app.use(
     "/pages/:l1/:l2",
     proxy({
         cache: false,
-        url: 'https://chandler123456.z13.web.core.windows.net/:l1/:l2',
+        url: 'https://bingadssmartpagetest.z19.web.core.windows.net/:l1/:l2',
     })
 );
 
@@ -30,7 +30,7 @@ app.use(
     "/pages/:l1",
     proxy({
         cache: false,
-        url: 'https://chandler123456.z13.web.core.windows.net/:l1',
+        url: 'https://bingadssmartpagetest.z19.web.core.windows.net/:l1',
     })
 );
 
