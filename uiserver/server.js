@@ -13,12 +13,12 @@ const customDomainMap = {
 };
 
 function mapDomain (req) {
-    console.log(req.originalUrl); // /123?x=1&y=2
-    console.log(req._parsedUrl.search); // ?x=1&y=2
+    // console.log(req.originalUrl); // /123?x=1&y=2
+    // console.log(req._parsedUrl.search); // ?x=1&y=2
     const customDomain = customDomainMap[req.headers.host];
-    console.log(customDomain);
-    const redirectPath = customDomain + req.originalUrl;
-    console.log(redirectPath);
+    // console.log(customDomain);
+    const redirectPath = customDomain || '' + req.originalUrl;
+    // console.log(redirectPath);
     return redirectPath;
 }
 app.use('/*', newProxy(CDN, {
