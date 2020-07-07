@@ -2,6 +2,9 @@ const express = require('express');
 const proxy = require('express-request-proxy');
 const newProxy = require('express-http-proxy');
 const cors = require('cors');
+var fs = require('fs');
+// var http = require('http');
+var https = require('https');
 
 const app = express();
 
@@ -30,3 +33,10 @@ app.use('/*', newProxy(CDN, {
 }));
 
 app.listen(process.env.PORT || 80, function () { });
+
+var privateKey  = fs.readFileSync('./my.key', 'utf8');
+var certificate = fs.readFileSync('./my.crt', 'utf8');
+var credentials = {key: privateKey, cert: certificate};
+var httpsServer = https.createServer(credentials, app);
+// httpServer.listen(8080);
+httpsServer.listen(443);
