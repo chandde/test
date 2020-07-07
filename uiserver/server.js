@@ -44,7 +44,7 @@ function mapDomain(req) {
     const customDomain = mapping[req.headers.host];
     console.log(customDomain);
     const redirectPath = (customDomain || '') + req.originalUrl;
-    console.log(redirectPath);
+    console.log(`redirectPath = ${redirectPath}`);
     return redirectPath;
 }
 
