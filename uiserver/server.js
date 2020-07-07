@@ -2,7 +2,7 @@ const express = require('express');
 const proxy = require('express-request-proxy');
 const newProxy = require('express-http-proxy');
 const app = express();
-// const cors = require(cors);
+const cors = require(cors);
 
 // const SERVER = 'bingadssmartpagetest1.centralus.cloudapp.azure.com';
 const CDN = "https://bingadssmartpagetest2.azureedge.net/"
@@ -21,6 +21,9 @@ function mapDomain (req) {
     console.log(redirectPath);
     return redirectPath;
 }
+
+app.use(cors());
+
 app.use('/*', newProxy(CDN, {
     proxyReqPathResolver: mapDomain
 }));
