@@ -19,7 +19,7 @@ const HOST = 'bingadssmartpagetest2.centralus.cloudapp.azure.com';
 //     'bingadssmartpagetest2.centralus.cloudapp.azure.com': '', // for the site itself, do not add ex
 // };
 
-function mapDomain(req) {
+async function mapDomain(req) {
     if (req.headers.host === HOST) {
         return '';
     }
