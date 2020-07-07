@@ -6,9 +6,15 @@
 </head>
 
 <body>
+    <!-- root div is the entrypoint that react attaches to -->
     <div id="root"></div>
-    <!-- <script type="text/javascript" src="config.json"></script> -->
-    <script src="main.js"></script>
+    <script id="config" type="module" src="./config.js"></script>
+    <script id="smartpage" type="module" src="./main.js"></script>
+    <script type="module">
+        import { config } from "./config.js";
+        // startApp is the output library from main.js webpack bundle
+        window.startApp(config);
+    </script>
 </body>
 
 </html>

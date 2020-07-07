@@ -1,12 +1,16 @@
 const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
+const path = require('path');
 
 module.exports = {
-    // loaders: [
-    // ],
-    // entry: {
-    //     'config.json': './src/config.json'
-    // },
+    entry: './src/index.js',
+    output: {
+        filename: 'main.js',
+        path: __dirname + '/dist',
+        library: 'startApp',
+        libraryTarget: 'window',
+        libraryExport: 'default'
+    },
     module: {
         rules: [
             {
@@ -15,42 +19,10 @@ module.exports = {
                 use: {
                     loader: "babel-loader"
                 }
-            },
-            // {
-            //     test: /config.json$/,
-            //     use: {
-            //         loader: 'file-loader?name=config.json!web-app-manifest-loader'
-            //     }
-            // }
-            // {
-            //     type: 'javascript/auto',
-            //     test: /\.json$/,
-            //     exclude: /node_modules/,
-            //     use: [{
-            //         loader: 'file-loader',
-            //         options: { name: '[name].[ext]' },
-            //     }],
-            // }
-            // {
-            //     test: /\.json$/,
-            //     loader: 'file-loader',
-            //     type: 'javascript/auto',
-            //     exclude: /node_modules/
-            // },
+            }
         ]
     },
     optimization: {
         minimize: false
     },
-    plugins: [
-        // new webpack.IgnorePlugin(/^\.\/config\.json$/),
-        // new CopyPlugin({
-        //     patterns: [
-        //         { from: 'src/config.json' }
-        //     ],
-        // }),
-    ],
-    // externals: {
-    //     'config': 'JSON.stringify(require(\'./config.json\'))'// "require('./config.json')"
-    // }
 };
