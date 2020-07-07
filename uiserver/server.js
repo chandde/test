@@ -1,7 +1,7 @@
 const express = require('express');
 const proxy = require('express-request-proxy');
 const newProxy = require('express-http-proxy');
-const cors = require(cors);
+const cors = require('cors');
 
 const app = express();
 
