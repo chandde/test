@@ -51,7 +51,9 @@ async function mapDomain(req) {
 app.use(cors());
 
 app.use('/*', newProxy(CDN, {
-    proxyReqPathResolver: mapDomain
+    proxyReqPathResolver: function(req) {
+        return mapDomain(req);
+    }
 }));
 
 // app.listen(process.env.PORT || 80, function () { });
