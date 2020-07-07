@@ -2,13 +2,14 @@ const express = require('express');
 const proxy = require('express-request-proxy');
 const newProxy = require('express-http-proxy');
 const app = express();
+// const cors = require(cors);
 
 // const SERVER = 'bingadssmartpagetest1.centralus.cloudapp.azure.com';
 const CDN = "https://bingadssmartpagetest2.azureedge.net/"
 
 const customDomainMap = {
     "www.chandlerdeng.com": "/site1",
-    'bingadssmartpagetest1.centralus.cloudapp.azure.com': '', // for the site itself, do not add ex
+    'bingadssmartpagetest2.centralus.cloudapp.azure.com': '', // for the site itself, do not add ex
 };
 
 function mapDomain (req) {
