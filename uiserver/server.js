@@ -26,7 +26,7 @@ async function mapDomain(req) {
 
     var mapSource = "https://bingadssmartpagetest2.azureedge.net/common/custom-domain-mapping.json";
     var mappingStr = await new Promise((resolve, reject) => {
-        request(url, (error, response, body) => {
+        request(mapSource, (error, response, body) => {
             if (response.statusCode === 200) {
                 resolve(body);
             } else {
