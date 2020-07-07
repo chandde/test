@@ -58,10 +58,10 @@ app.use('/*', newProxy(CDN, {
                 if (response.statusCode === 200) {
                     console.log(`original mapping downloaded: ${body}`);
                     var mapping = JSON.parse(body);                
-                    console.log(req.originalUrl); // /123?x=1&y=2
-                    console.log(req._parsedUrl.search); // ?x=1&y=2
+                    console.log(`req.originalUrl: ${req.originalUrl}`); // /123?x=1&y=2
+                    // console.log(req._parsedUrl.search); // ?x=1&y=2
                     const customDomain = mapping[req.headers.host];
-                    console.log(customDomain);
+                    console.log(`customDomain: ${customDomain}`);
                     const redirectPath = (customDomain || '') + req.originalUrl;
                     console.log(`redirectPath = ${redirectPath}`);
                     resolve(redirectPath);
