@@ -4,11 +4,11 @@ const newProxy = require('express-http-proxy');
 const app = express();
 
 // const SERVER = 'bingadssmartpagetest1.centralus.cloudapp.azure.com';
-const CDN = "https://bingadssmartpagetest.azureedge.net/"
+// TO DO replace with the actual CDN link
+const CDN = "https://bingadssmartpagetest2.z19.web.core.windows.net/"
 
 const customDomainMap = {
-    "www.test.com": "/server1",
-    "www.chandlerdeng.com": "/server1",
+    "www.chandlerdeng.com": "/server1/index.html",
     'bingadssmartpagetest1.centralus.cloudapp.azure.com': '', // for the site itself, do not add ex
 };
 
