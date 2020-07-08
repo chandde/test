@@ -74,7 +74,7 @@ async function populateHtml(site) {
 }
 
 app.use('/:l1', function (req, res) {
-    console.log(`handling request ${req.headers.host}${red.originalUrl}`);
+    console.log(`handling request ${req.headers.host}${req.originalUrl}`);
     if (req.originalUrl !== '/favicon.ico') {
         populateHtml(req.originalUrl.substring(1)).then((indexHtml) => {
             res.set('Content-Type', 'text/html');
@@ -86,7 +86,7 @@ app.use('/:l1', function (req, res) {
 });
 
 app.use('/', function (req, res) {
-    console.log(`handling request ${req.headers.host}${red.originalUrl}`);
+    console.log(`handling request ${req.headers.host}${req.originalUrl}`);
     // only handle root request if it's from custom domain
     if (req.headers.host !== HOST) {
         getDomainMapping(req.headers.host).then((site) => {
