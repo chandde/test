@@ -87,10 +87,11 @@ app.use('/:l1', function (req, res) {
 app.use('/', function (req, res) {
     // only handle root request if it's from custom domain
     if (req.headers.host !== HOST) {
-        const site = getDomainMapping(req.headers.host);
-        populateHtml(site).then((indexHtml) => {
-            res.set('Content-Type', 'text/html');
-            res.send(indexHtml);
+        getDomainMapping(req.headers.host).then((site) => {
+            populateHtml(site).then((indexHtml) => {
+                res.set('Content-Type', 'text/html');
+                res.send(indexHtml);
+            });
         });
     } else {
         res.status(404).send();
