@@ -18003,11 +18003,11 @@ var template2_Template2 = /*#__PURE__*/function (_React$Component) {
       return /*#__PURE__*/react_default.a.createElement("div", {
         className: "smart-page-template2",
         style: style
-      }, /*#__PURE__*/react_default.a.createElement("h1", null, this.props.config.content.header), /*#__PURE__*/react_default.a.createElement("div", {
+      }, /*#__PURE__*/react_default.a.createElement("div", {
         className: "image"
       }, /*#__PURE__*/react_default.a.createElement("img", {
         src: this.props.config.content.image
-      })));
+      })), /*#__PURE__*/react_default.a.createElement("h1", null, this.props.config.content.header));
     }
   }]);
 

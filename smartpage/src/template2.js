@@ -9,10 +9,10 @@ export class Template2 extends React.Component {
     };
     return (
       <div className="smart-page-template2" style={style}>
-        <h1>{this.props.config.content.header}</h1>
         <div className="image">
           <img src={this.props.config.content.image}></img>
         </div>
+        <h1>{this.props.config.content.header}</h1>
       </div>
     );
   }

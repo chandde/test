@@ -26,7 +26,7 @@ function getTxtContent(url) {
             if (response && response.statusCode === 200) {
                 content = body;
             }
-            console.log(`url ${url} returned content ${content}`);
+            // console.log(`url ${url} returned content ${content}`);
             resolve(content);
         });
     });
@@ -68,12 +68,13 @@ async function populateHtml(site) {
     indexHtml = indexHtml.replace('%%config.js%%', `${CDN}sites/${site}/${siteVersion}/config.js`);
     indexHtml = indexHtml.replace('%%config.js%%', `${CDN}sites/${site}/${siteVersion}/config.js`);
 
-    console.log(`index.html ${indexHtml}`);
+    // console.log(`index.html ${indexHtml}`);
 
     return indexHtml;
 }
 
 app.use('/:l1', function (req, res) {
+    console.log(`handling request ${req.headers.host}${red.originalUrl}`);
     if (req.originalUrl !== '/favicon.ico') {
         populateHtml(req.originalUrl.substring(1)).then((indexHtml) => {
             res.set('Content-Type', 'text/html');
@@ -85,6 +86,7 @@ app.use('/:l1', function (req, res) {
 });
 
 app.use('/', function (req, res) {
+    console.log(`handling request ${req.headers.host}${red.originalUrl}`);
     // only handle root request if it's from custom domain
     if (req.headers.host !== HOST) {
         getDomainMapping(req.headers.host).then((site) => {
