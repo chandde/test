@@ -1,3 +1,4 @@
 codeshare/node_modules
 uiserver/node_modules
-uiserver/smartpagestemplate/node_modules
+smartpage/node_modules
+.vs

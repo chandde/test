@@ -6,49 +6,103 @@ const fs = require('fs');
 const http = require('http');
 const https = require('https');
 const request = require('request');
+const config = require('config');
+
+const CDN = config.get('Cdn');
+const HOST = config.get('Host');
+const HttpPort = config.get('HttpPort');
+const HttpsPort = config.get('HttpsPort');
+
+const domainMap = {};
 
 const app = express();
-
-// const SERVER = 'bingadssmartpagetest1.centralus.cloudapp.azure.com';
-const CDN = "https://bingadssmartpagetest2.azureedge.net/";
-
-const HOST = 'bingadssmartpagetest2.centralus.cloudapp.azure.com';
-
+// allow cross origin request so client can request CDN content directly and bypass Web Server
 app.use(cors());
 
-app.use('/*', newProxy(CDN, {
-    proxyReqPathResolver: function (req) {
-        return new Promise((resolve, reject) => {
-            if (req.headers.host === HOST) {
-                resolve(req.originalUrl);
-            } else {
-                var mapSource = "https://bingadssmartpagetest2.azureedge.net/common/custom-domain-mapping.json";
-                request(mapSource, (error, response, body) => {
-                    if (response.statusCode === 200) {
-                        console.log(`original mapping downloaded: ${body}`);
-                        var mapping = JSON.parse(body);
-                        console.log(`req.originalUrl: ${req.originalUrl}`); // /123?x=1&y=2
-                        // console.log(req._parsedUrl.search); // ?x=1&y=2
-                        const customDomain = mapping[req.headers.host];
-                        console.log(`customDomain: ${customDomain}`);
-                        const redirectPath = (customDomain || '') + req.originalUrl;
-                        console.log(`redirectPath = ${redirectPath}`);
-                        resolve(redirectPath);
-                    } else {
-                        reject();
-                    }
-                });
+function getTxtContent(url) {
+    return new Promise((resolve, reject) => {
+        request(url, (error, response, body) => {
+            var content = '';
+            if (response && response.statusCode === 200) {
+                content = body;
             }
+            console.log(`url ${url} returned content ${content}`);
+            resolve(content);
         });
+    });
+}
+
+async function getDomainMapping(domain) {
+    // when do we update existing mapping cache and return early? 
+    if (!domainMap[domain]) {
+        const url = `${CDN}domainmapping/${domain}.txt`;
+        // update cache
+        domainMap[domain] = await getTxtContent(url);
     }
-}));
+    return domainMap[domain];
+}
+
+async function getSiteVersion(site) {
+    const url = `${CDN}sites/${site}/version.txt`;
+    return await getTxtContent(url);
+}
+
+async function getSharedResourceVersion() {
+    const url = `${CDN}common/version.txt`;
+    return await getTxtContent(url);
+}
+
+async function populateHtml(site) {
+    // get shared version
+    const sharedResourceVersion = await getSharedResourceVersion();
+
+    // get template index html
+    var indexHtml = await getTxtContent(`${CDN}common/${sharedResourceVersion}/index.html`);
+
+    // update common js inside html
+    indexHtml = indexHtml.replace('%%main.js%%', `${CDN}common/${sharedResourceVersion}/main.js`);
+
+    // update site config js inside html
+    const siteVersion = await getSiteVersion(site);
+    // for some reason replaceAll was not recognized
+    indexHtml = indexHtml.replace('%%config.js%%', `${CDN}sites/${site}/${siteVersion}/config.js`);
+    indexHtml = indexHtml.replace('%%config.js%%', `${CDN}sites/${site}/${siteVersion}/config.js`);
+
+    console.log(`index.html ${indexHtml}`);
+
+    return indexHtml;
+}
+
+app.use('/:l1', function (req, res) {
+    if (req.originalUrl !== '/favicon.ico') {
+        populateHtml(req.originalUrl.substring(1)).then((indexHtml) => {
+            res.set('Content-Type', 'text/html');
+            res.send(indexHtml);
+        });
+    } else {
+        res.status(404).send();
+    }
+});
+
+app.use('/', function (req, res) {
+    // only handle root request if it's from custom domain
+    if (req.headers.host !== HOST) {
+        const site = getDomainMapping(req.headers.host);
+        populateHtml(site).then((indexHtml) => {
+            res.set('Content-Type', 'text/html');
+            res.send(indexHtml);
+        });
+    } else {
+        res.status(404).send();
+    }
+});
 
 // app.listen(process.env.PORT || 80, function () { });
 var httpServer = http.createServer(app);
-httpServer.listen(80);
+httpServer.listen(HttpPort);
 
 var privateKey = fs.readFileSync('./my.key', 'utf8');
 var certificate = fs.readFileSync('./my.crt', 'utf8');
 var credentials = { key: privateKey, cert: certificate };
 var httpsServer = https.createServer(credentials, app);
-httpsServer.listen(443);
+httpsServer.listen(HttpsPort);
