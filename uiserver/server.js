@@ -9,10 +9,13 @@ const request = require('request');
 const config = require('config');
 const { domain } = require('process');
 
-const CDN = config.get('Cdn');
-const HOST = config.get('Host');
+const Cdn = config.get('Cdn');
+const Host = config.get('Host');
 const HttpPort = config.get('HttpPort');
 const HttpsPort = config.get('HttpsPort');
+
+const FullCustomDomain = config.get('FullCustomDomain');
+const CustomDomain = config.get('CustomDomain');
 
 const customDomainMap = {};
 const subdomainMap = {};
@@ -37,7 +40,7 @@ function getTxtContent(url) {
 async function getCustomDomainMapping(domain) {
     // when do we update existing mapping cache and return early? 
     if (!customDomainMap[domain]) {
-        const url = `${CDN}customdomainmapping/${domain}.txt`;
+        const url = `${Cdn}customdomainmapping/${domain}.txt`;
         // update cache
         customDomainMap[domain] = await getTxtContent(url);
     }
@@ -47,7 +50,7 @@ async function getCustomDomainMapping(domain) {
 async function getSubdomainMapping(domain) {
     // when do we update existing mapping cache and return early? 
     if (!subdomainMap[domain]) {
-        const url = `${CDN}subdomainmapping/${domain}.txt`;
+        const url = `${Cdn}subdomainmapping/${domain}.txt`;
         // update cache
         subdomainMap[domain] = await getTxtContent(url);
     }
@@ -55,12 +58,12 @@ async function getSubdomainMapping(domain) {
 }
 
 async function getSiteVersion(site) {
-    const url = `${CDN}sites/${site}/version.txt`;
+    const url = `${Cdn}sites/${site}/version.txt`;
     return await getTxtContent(url);
 }
 
 async function getSharedResourceVersion() {
-    const url = `${CDN}common/version.txt`;
+    const url = `${Cdn}common/version.txt`;
     return await getTxtContent(url);
 }
 
@@ -69,59 +72,63 @@ async function populateHtml(site) {
     const sharedResourceVersion = await getSharedResourceVersion();
 
     // get template index html
-    var indexHtml = await getTxtContent(`${CDN}common/${sharedResourceVersion}/index.html`);
+    var indexHtml = await getTxtContent(`${Cdn}common/${sharedResourceVersion}/index.html`);
 
     // update common js inside html
-    indexHtml = indexHtml.replace('%%main.js%%', `${CDN}common/${sharedResourceVersion}/main.js`);
+    indexHtml = indexHtml.replace('%%main.js%%', `${Cdn}common/${sharedResourceVersion}/main.js`);
 
     // update site config js inside html
     const siteVersion = await getSiteVersion(site);
     // for some reason replaceAll was not recognized
-    indexHtml = indexHtml.replace('%%config.js%%', `${CDN}sites/${site}/${siteVersion}/config.js`);
-    indexHtml = indexHtml.replace('%%config.js%%', `${CDN}sites/${site}/${siteVersion}/config.js`);
+    indexHtml = indexHtml.replace('%%config.js%%', `${Cdn}sites/${site}/${siteVersion}/config.js`);
+    indexHtml = indexHtml.replace('%%config.js%%', `${Cdn}sites/${site}/${siteVersion}/config.js`);
 
     // console.log(`index.html ${indexHtml}`);
 
     return indexHtml;
 }
 
+// only support l1 request if user is accessing by host or by custom domain
+// e.g. www.smartpage.com/site1
+// or smartpage.centralus.cloudapp.azure.net/site1
 app.use('/:l1', function (req, res) {
-    // block subdomain access to l1
-    const domainAlias = config.get('DomainAlias');
-    if (req.headers.host.indexOf(domainAlias) > 0) {
-        // we received a subdomain request with l1, reject
-        // e.g. cars.bingads.com/site1
-        res.status(404).send();
-        return;
-    }
-    // console.log(req);
-    console.log(`handling request ${req.headers.host}${req.originalUrl}`);
-    if (req.originalUrl !== '/favicon.ico') {
+    if (req.headers.host === FullCustomDomain || req.headers.host === Host) {
+        // user is accessing www.smartpage.com/site1
         populateHtml(req.originalUrl.substring(1)).then((indexHtml) => {
             res.send(indexHtml);
         });
-    } else {
+    }
+    else {
         res.status(404).send();
     }
+    //  else {
+    //     console.log(`handling request ${req.headers.host}${req.originalUrl}`);
+    //     if (req.originalUrl !== '/favicon.ico') {
+    //         populateHtml(req.originalUrl.substring(1)).then((indexHtml) => {
+    //             res.send(indexHtml);
+    //         });
+    //     } else {
+    //         res.status(404).send();
+    //     }
+    // }
 });
 
+// only allow root access from subdomain, or domain from customer
+// e.g. cars.smartpage.com, in this case we need to find the mapping
+// between cars -> site1 and return content from site1
+// or www.cars.com, we need to find the mapping www.cars.com -> site2
 app.use('/', function (req, res) {
-    // console.log(req);
-    console.log(`handling request ${req.headers.host}${req.originalUrl}`);
-    // sub domain
-    const domainAlias = config.get('DomainAlias');
-    if(req.headers.host.indexOf(domainAlias) !== -1) {
-        // we're receiving a request from subdomain, e.g. car.bingads.com
-        // we need to get the mapping between car and our sites from blob
+    if (req.headers.host !== FullCustomDomain && req.headers.host.indexOf(CustomDomain) > 0) {
+        console.log(`handling request ${req.headers.host}${req.originalUrl}`);
         const subdomain = req.headers.host.substring(0, req.headers.host.indexOf(domainAlias) - 1);
         getSubdomainMapping(subdomain).then((site) => {
             populateHtml(site).then((indexHtml) => {
                 res.send(indexHtml);
-            });            
+            });
         });
     }
     // custom domain
-    else if (req.headers.host !== HOST) {
+    else if (req.headers.host !== Host) {
         getCustomDomainMapping(req.headers.host).then((site) => {
             populateHtml(site).then((indexHtml) => {
                 res.send(indexHtml);
