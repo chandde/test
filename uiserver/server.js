@@ -86,11 +86,18 @@ async function populateHtml(site) {
 }
 
 app.use('/:l1', function (req, res) {
+    // block subdomain access to l1
+    const domainAlias = config.get('DomainAlias');
+    if (req.headers,host.indexOf(domainAlias) > 0) {
+        // we received a subdomain request with l1, reject
+        // e.g. cars.bingads.com/site1
+        res.status(404).send();
+        return;
+    }
     // console.log(req);
     console.log(`handling request ${req.headers.host}${req.originalUrl}`);
     if (req.originalUrl !== '/favicon.ico') {
         populateHtml(req.originalUrl.substring(1)).then((indexHtml) => {
-            res.set('Content-Type', 'text/html');
             res.send(indexHtml);
         });
     } else {
@@ -101,7 +108,7 @@ app.use('/:l1', function (req, res) {
 app.use('/', function (req, res) {
     // console.log(req);
     console.log(`handling request ${req.headers.host}${req.originalUrl}`);
-    // subdomain
+    // sub domain
     const domainAlias = config.get('DomainAlias');
     if(req.headers.host.indexOf(domainAlias) !== -1) {
         // we're receiving a request from subdomain, e.g. car.bingads.com
@@ -109,7 +116,6 @@ app.use('/', function (req, res) {
         const subdomain = req.headers.host.substring(0, req.headers.host.indexOf(domainAlias) - 1);
         getSubdomainMapping(subdomain).then((site) => {
             populateHtml(site).then((indexHtml) => {
-                res.set('Content-Type', 'text/html');
                 res.send(indexHtml);
             });            
         });
@@ -118,7 +124,6 @@ app.use('/', function (req, res) {
     else if (req.headers.host !== HOST) {
         getCustomDomainMapping(req.headers.host).then((site) => {
             populateHtml(site).then((indexHtml) => {
-                res.set('Content-Type', 'text/html');
                 res.send(indexHtml);
             });
         });
