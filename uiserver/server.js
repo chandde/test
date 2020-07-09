@@ -7,13 +7,15 @@ const http = require('http');
 const https = require('https');
 const request = require('request');
 const config = require('config');
+const { domain } = require('process');
 
 const CDN = config.get('Cdn');
 const HOST = config.get('Host');
 const HttpPort = config.get('HttpPort');
 const HttpsPort = config.get('HttpsPort');
 
-const domainMap = {};
+const customDomainMap = {};
+const subdomainMap = {};
 
 const app = express();
 // allow cross origin request so client can request CDN content directly and bypass Web Server
@@ -32,14 +34,24 @@ function getTxtContent(url) {
     });
 }
 
-async function getDomainMapping(domain) {
+async function getCustomDomainMapping(domain) {
     // when do we update existing mapping cache and return early? 
-    if (!domainMap[domain]) {
-        const url = `${CDN}domainmapping/${domain}.txt`;
+    if (!customDomainMap[domain]) {
+        const url = `${CDN}customdomainmapping/${domain}.txt`;
         // update cache
-        domainMap[domain] = await getTxtContent(url);
+        customDomainMap[domain] = await getTxtContent(url);
     }
-    return domainMap[domain];
+    return customDomainMap[domain];
+}
+
+async function getSubdomainMapping(domain) {
+    // when do we update existing mapping cache and return early? 
+    if (!subdomainMap[domain]) {
+        const url = `${CDN}subdomainmapping/${domain}.txt`;
+        // update cache
+        subdomainMap[domain] = await getTxtContent(url);
+    }
+    return subdomainMap[domain];
 }
 
 async function getSiteVersion(site) {
@@ -74,7 +86,7 @@ async function populateHtml(site) {
 }
 
 app.use('/:l1', function (req, res) {
-    console.log(req);
+    // console.log(req);
     console.log(`handling request ${req.headers.host}${req.originalUrl}`);
     if (req.originalUrl !== '/favicon.ico') {
         populateHtml(req.originalUrl.substring(1)).then((indexHtml) => {
@@ -87,11 +99,24 @@ app.use('/:l1', function (req, res) {
 });
 
 app.use('/', function (req, res) {
-    console.log(req);
+    // console.log(req);
     console.log(`handling request ${req.headers.host}${req.originalUrl}`);
-    // only handle root request if it's from custom domain
-    if (req.headers.host !== HOST) {
-        getDomainMapping(req.headers.host).then((site) => {
+    // subdomain
+    const domainAlias = config.get('DomainAlias');
+    if(req.headers.host.indexOf(domainAlias) !== -1) {
+        // we're receiving a request from subdomain, e.g. car.bingads.com
+        // we need to get the mapping between car and our sites from blob
+        const subdomain = req.headers.host.substring(0, req.headers.host.indexOf(domainAlias) - 1);
+        getSubdomainMapping(subdomain).then((site) => {
+            populateHtml(site).then((indexHtml) => {
+                res.set('Content-Type', 'text/html');
+                res.send(indexHtml);
+            });            
+        });
+    }
+    // custom domain
+    else if (req.headers.host !== HOST) {
+        getCustomDomainMapping(req.headers.host).then((site) => {
             populateHtml(site).then((indexHtml) => {
                 res.set('Content-Type', 'text/html');
                 res.send(indexHtml);

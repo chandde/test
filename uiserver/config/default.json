@@ -1,6 +1,7 @@
 {
     "Cdn": "https://bingadssmartpagetest2.azureedge.net/",
     "Host": "bingadssmartpagetest2.centralus.cloudapp.azure.com",
+    "DomainAlias": "bingadssmartpagetest2.com",
     "HttpPort": 80,
     "HttpsPort": 443
 }
