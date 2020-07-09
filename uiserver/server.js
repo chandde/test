@@ -92,6 +92,7 @@ async function populateHtml(site) {
 // e.g. www.smartpage.com/site1
 // or smartpage.centralus.cloudapp.azure.net/site1
 app.use('/:l1', function (req, res) {
+    console.log(`handling request ${req.headers.host}${req.originalUrl}`);
     if (req.headers.host === FullCustomDomain || req.headers.host === Host) {
         // user is accessing www.smartpage.com/site1
         populateHtml(req.originalUrl.substring(1)).then((indexHtml) => {
@@ -118,8 +119,8 @@ app.use('/:l1', function (req, res) {
 // between cars -> site1 and return content from site1
 // or www.cars.com, we need to find the mapping www.cars.com -> site2
 app.use('/', function (req, res) {
+    console.log(`handling request ${req.headers.host}${req.originalUrl}`);
     if (req.headers.host !== FullCustomDomain && req.headers.host.indexOf(CustomDomain) > 0) {
-        console.log(`handling request ${req.headers.host}${req.originalUrl}`);
         const subdomain = req.headers.host.substring(0, req.headers.host.indexOf(CustomDomain) - 1);
         getSubdomainMapping(subdomain).then((site) => {
             populateHtml(site).then((indexHtml) => {
