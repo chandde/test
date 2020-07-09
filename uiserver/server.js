@@ -9,13 +9,14 @@ const request = require('request');
 const config = require('config');
 const { domain } = require('process');
 
-const Cdn = config.get('Cdn');
-const Host = config.get('Host');
 const HttpPort = config.get('HttpPort');
 const HttpsPort = config.get('HttpsPort');
 
+const Cdn = config.get('Cdn');
+const Host = config.get('Host');
 const FullCustomDomain = config.get('FullCustomDomain');
 const CustomDomain = config.get('CustomDomain');
+const TrafficManager = config.get('TrafficManager');
 
 const customDomainMap = {};
 const subdomainMap = {};
@@ -93,7 +94,10 @@ async function populateHtml(site) {
 // or smartpage.centralus.cloudapp.azure.net/site1
 app.use('/:l1', function (req, res) {
     console.log(`handling request ${req.headers.host}${req.originalUrl}`);
-    if (req.headers.host === FullCustomDomain || req.headers.host === Host) {
+    if (req.headers.host === FullCustomDomain
+        || req.headers.host === Host
+        || req.headers.host === TrafficManager
+    ) {
         // user is accessing www.smartpage.com/site1
         populateHtml(req.originalUrl.substring(1)).then((indexHtml) => {
             res.send(indexHtml);
