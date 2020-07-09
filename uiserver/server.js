@@ -88,7 +88,7 @@ async function populateHtml(site) {
 app.use('/:l1', function (req, res) {
     // block subdomain access to l1
     const domainAlias = config.get('DomainAlias');
-    if (req.headers,host.indexOf(domainAlias) > 0) {
+    if (req.headers.host.indexOf(domainAlias) > 0) {
         // we received a subdomain request with l1, reject
         // e.g. cars.bingads.com/site1
         res.status(404).send();
