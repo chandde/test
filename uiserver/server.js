@@ -120,7 +120,7 @@ app.use('/:l1', function (req, res) {
 app.use('/', function (req, res) {
     if (req.headers.host !== FullCustomDomain && req.headers.host.indexOf(CustomDomain) > 0) {
         console.log(`handling request ${req.headers.host}${req.originalUrl}`);
-        const subdomain = req.headers.host.substring(0, req.headers.host.indexOf(domainAlias) - 1);
+        const subdomain = req.headers.host.substring(0, req.headers.host.indexOf(CustomDomain) - 1);
         getSubdomainMapping(subdomain).then((site) => {
             populateHtml(site).then((indexHtml) => {
                 res.send(indexHtml);
