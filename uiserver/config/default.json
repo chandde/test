@@ -1,8 +1,8 @@
 {
     "Cdn": "https://bingadssmartpagetest2.azureedge.net/",
     "Host": "bingadssmartpagetest2.centralus.cloudapp.azure.com",
-    "FullCustomDomain": "www.bingadssmartpagetest2.com",
-    "CustomDomain": "bingadssmartpagetest2.com",
+    "FullCustomDomain": "www.bingadssmartpagetest3.com",
+    "CustomDomain": "bingadssmartpagetest3.com",
     "TrafficManager": "bingadssmartpagetest2.trafficmanager.net",
     "HttpPort": 80,
     "HttpsPort": 443

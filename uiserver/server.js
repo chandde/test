@@ -148,8 +148,10 @@ app.use('/', function (req, res) {
 var httpServer = http.createServer(app);
 httpServer.listen(HttpPort);
 
-var privateKey = fs.readFileSync('./my.key', 'utf8');
-var certificate = fs.readFileSync('./my.crt', 'utf8');
-var credentials = { key: privateKey, cert: certificate };
+var pem = fs.readFileSync('./bingadssmartpagetest3.pem', 'utf8');
+var credentials = {
+    key: pem,
+    cert: pem
+};
 var httpsServer = https.createServer(credentials, app);
 httpsServer.listen(HttpsPort);
