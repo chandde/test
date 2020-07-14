@@ -1,3 +1,5 @@
+console.log("smart page server is running");
+
 const express = require('express');
 const proxy = require('express-request-proxy');
 const newProxy = require('express-http-proxy');
@@ -11,7 +13,9 @@ const { domain } = require('process');
 const httpToHttps = require('express-http-to-https');
 
 const HttpPort = config.get('HttpPort');
-const HttpsPort = config.get('HttpsPort');
+const HttpsPort = process.env.PORT || config.get('HttpsPort');
+
+console.log(`https port ${HttpsPort}`);
 
 const Cdn = config.get('Cdn');
 const Host = config.get('Host');
