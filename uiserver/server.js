@@ -8,7 +8,7 @@ const https = require('https');
 const request = require('request');
 const config = require('config');
 const { domain } = require('process');
-
+const httpToHttps = require('express-http-to-https');
 const HttpPort = config.get('HttpPort');
 const HttpsPort = config.get('HttpsPort');
 
@@ -24,6 +24,7 @@ const subdomainMap = {};
 const app = express();
 // allow cross origin request so client can request CDN content directly and bypass Web Server
 app.use(cors());
+app.use(httpToHttps.redirectToHTTPS(httpToHttps.ignoreHosts, httpToHttps.ignoreRoutes));
 
 function getTxtContent(url) {
     return new Promise((resolve, reject) => {
@@ -150,6 +151,10 @@ httpServer.listen(HttpPort);
 
 var privateKey = fs.readFileSync('./my.key', 'utf8');
 var certificate = fs.readFileSync('./my.crt', 'utf8');
-var credentials = { key: privateKey, cert: certificate };
-var httpsServer = https.createServer(credentials, app);
+// var credentials = { key: privateKey, cert: certificate };
+var options = {
+    pfx: fs.readFileSync('./keyvaultwildcard.pfx'),
+    passphrase: '',
+};
+var httpsServer = https.createServer(options, app);
 httpsServer.listen(HttpsPort);
