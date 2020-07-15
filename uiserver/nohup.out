@@ -1,2 +1,12 @@
 4880483c7fbe999c34d7031f4b39dbe93c1d9883ab1a4ce6bcc64e117fee8a28
 3ae73c7a414cdd39451a9bd7c826ea2c81935907ec198d2f009bdaee4a700a79
+713d3f5e8d2e3e2746788b2bd1ef63fe510dac2b7fe463c1ad549de0e989b58b
+unknown shorthand flag: 'b' in -b
+See 'docker run --help'.
+unknown shorthand flag: 'b' in -b
+See 'docker run --help'.
+6f607b1e6476119fc056e6e4c66e5909a34e9853966df396ca4ac4cf344328da
+7b3f766093149820e83cce54c2e289cc2e9e67645ec069a1999d61d05dcf4abf
+docker: Error response from daemon: driver failed programming external connectivity on endpoint optimistic_kepler (4e5ad4e8bbdd53deaa65685010a2067e379916ab50f8e0644d8980ce12a9ec7d): Bind for 0.0.0.0:8004 failed: port is already allocated.
+a94fc2af561a9b8d7adcb27551f9473cd256b77504fb62db81afee8fa86e4194
+4a6993ea0876c02aae2b441ea2b00d760da3e41d38424269ee1b7b6e46069fb3
