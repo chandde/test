@@ -12,10 +12,22 @@ const config = require('config');
 const { domain } = require('process');
 const httpToHttps = require('express-http-to-https');
 
+// https://docs.microsoft.com/en-us/javascript/api/overview/azure/keyvault-certificates-readme?view=azure-node-latest#getting-a-key-vault-certificate
+const { DefaultAzureCredential } = require("@azure/identity");
+const { SecretClient } = require("@azure/keyvault-secrets");
+
+async function getCert() {
+    const credential = new DefaultAzureCredential();
+    const url = `https://${config.get('SecretKeyVaultName')}.vault.azure.net`;
+    const client = new SecretClient(url, credential);
+    const secretName = config.get('SecretName');
+
+    return await client.getSecret(secretName);
+}
+
 const HttpPort = config.get('HttpPort');
 const HttpsPort = process.env.PORT || config.get('HttpsPort');
-
-console.log(`https port ${HttpsPort}`);
+console.log(`https listening on port ${HttpsPort}`);
 
 const Cdn = config.get('Cdn');
 const Host = config.get('Host');
@@ -110,17 +122,8 @@ app.use('/:l1', function (req, res) {
         });
     }
     else {
-        res.status(404).send();
+        res.status(404).send("Page not found!");
     }
-    //  else {
-    //     console.log(`handling request ${req.headers.host}${req.originalUrl}`);
-    //     if (req.originalUrl !== '/favicon.ico') {
-    //         populateHtml(req.originalUrl.substring(1)).then((indexHtml) => {
-    //             res.send(indexHtml);
-    //         });
-    //     } else {
-    //         res.status(404).send();
-    //     }
     // }
 });
 
@@ -146,20 +149,20 @@ app.use('/', function (req, res) {
             });
         });
     } else {
-        res.status(404).send();
+        res.status(404).send("Page not found!");
     }
 });
 
-// app.listen(process.env.PORT || 80, function () { });
 var httpServer = http.createServer(app);
 httpServer.listen(HttpPort);
 
-var privateKey = fs.readFileSync('./my.key', 'utf8');
-var certificate = fs.readFileSync('./my.crt', 'utf8');
-// var credentials = { key: privateKey, cert: certificate };
-var options = {
-    pfx: fs.readFileSync('./keyvaultwildcard.pfx'),
-    passphrase: '',
-};
-var httpsServer = https.createServer(options, app);
-httpsServer.listen(HttpsPort);
+getCert().then((certificate) => {
+    // certificate.value is BASE64, we need to convert it into binary first
+    const bCert = new Buffer(certificate.value, 'base64');
+    var options = {
+        pfx: bCert, // fs.readFileSync('./keyvaultwildcard.pfx'),
+        passphrase: '',
+    };
+    var httpsServer = https.createServer(options, app);
+    httpsServer.listen(HttpsPort);
+});
