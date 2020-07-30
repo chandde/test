@@ -88,7 +88,7 @@ async function getSiteVersion(site) {
 }
 
 async function getSharedResourceVersion() {
-    const url = `${Cdn}common/version.txt`;
+    const url = `${Blob}common/version.txt`;
     return await getTxtContent(url);
 }
 
@@ -105,8 +105,8 @@ async function populateHtml(site) {
     // update site config js inside html
     const siteVersion = await getSiteVersion(site);
     // for some reason replaceAll was not recognized
-    indexHtml = indexHtml.replace('%%config.js%%', `${Cdn}pages/${site}/${siteVersion}/config.js`);
-    indexHtml = indexHtml.replace('%%config.js%%', `${Cdn}pages/${site}/${siteVersion}/config.js`);
+    indexHtml = indexHtml.replace('%%config.js%%', `${Blob}pages/${site}/${siteVersion}/config.js`);
+    indexHtml = indexHtml.replace('%%config.js%%', `${Blob}pages/${site}/${siteVersion}/config.js`);
 
     // log(`index.html ${indexHtml}`);
 
