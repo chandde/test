@@ -11,9 +11,11 @@ export class Template1 extends React.Component {
       <div className="smart-page-template1" style={style}>
         <h1>{`Name = ${this.props.config.SmartPageProperties.Name}`}</h1>
         <br/>
-        <h1>{`Desc = ${this.props.config.SmartPageProperties.Description}`}</h1>
+        <h2>{`Desc = ${this.props.config.SmartPageProperties.Description}`}</h2>
         <br/>
-        <h2>{`Subdomain = ${this.props.config.SmartPageProperties.SubDomain}`}</h2>
+        <h3>{`Subdomain = ${this.props.config.SmartPageProperties.SubDomain}`}</h3>
+        <br/>
+        <h3>{`Suffix = ${this.props.config.SmartPageProperties.SiteSuffix}`}</h3>
         <br/>
         <div className="image">
           {/* <img src={this.props.config.content.image}></img> */}

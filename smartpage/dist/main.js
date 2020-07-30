@@ -17942,7 +17942,7 @@ var template1_Template1 = /*#__PURE__*/function (_React$Component) {
       return /*#__PURE__*/react_default.a.createElement("div", {
         className: "smart-page-template1",
         style: style
-      }, /*#__PURE__*/react_default.a.createElement("h1", null, "Name = ".concat(this.props.config.SmartPageProperties.Name)), /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("h1", null, "Desc = ".concat(this.props.config.SmartPageProperties.Description)), /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("h2", null, "Subdomain = ".concat(this.props.config.SmartPageProperties.SubDomain)), /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("div", {
+      }, /*#__PURE__*/react_default.a.createElement("h1", null, "Name = ".concat(this.props.config.SmartPageProperties.Name)), /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("h2", null, "Desc = ".concat(this.props.config.SmartPageProperties.Description)), /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("h3", null, "Subdomain = ".concat(this.props.config.SmartPageProperties.SubDomain)), /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("h3", null, "Suffix = ".concat(this.props.config.SmartPageProperties.SiteSuffix)), /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("div", {
         className: "image"
       }));
     }
