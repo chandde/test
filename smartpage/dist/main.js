@@ -17923,24 +17923,6 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
-var config1 = {
-  "Id": 13743895347203,
-  "Status": 109,
-  "SmartPageProperties": {
-    "SiteSuffix": "",
-    "Name": "Testing 41a28252-7fb6-4f40-995f-857059350d19",
-    "Description": "My first Smart Page test",
-    "SubDomain": "smartpagesubdomain",
-    "Attributes": {
-      "key1": "value1"
-    }
-  },
-  "SmartPageAssetIds": {
-    "ImageIds": [1],
-    "VideoIds": [3]
-  },
-  "Images": null
-};
 var template1_Template1 = /*#__PURE__*/function (_React$Component) {
   _inherits(Template1, _React$Component);
 
@@ -17956,13 +17938,11 @@ var template1_Template1 = /*#__PURE__*/function (_React$Component) {
     key: "render",
     value: function render() {
       document.title = this.props.config.SmartPageProperties.Name;
-      var style = {
-        display: "inline-flex"
-      };
+      var style = {};
       return /*#__PURE__*/react_default.a.createElement("div", {
         className: "smart-page-template1",
         style: style
-      }, /*#__PURE__*/react_default.a.createElement("h1", null, this.props.config.SmartPageProperties.Name), /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("h1", null, this.props.config.SmartPageProperties.Description), /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("h2", null, this.props.config.SmartPageProperties.SubDomain), /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("div", {
+      }, /*#__PURE__*/react_default.a.createElement("h1", null, "Name = ".concat(this.props.config.SmartPageProperties.Name)), /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("h1", null, "Desc = ".concat(this.props.config.SmartPageProperties.Description)), /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("h2", null, "Subdomain = ".concat(this.props.config.SmartPageProperties.SubDomain)), /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("div", {
         className: "image"
       }));
     }
