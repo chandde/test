@@ -37,8 +37,8 @@ log(`https listening on port ${HttpsPort}`);
 const Cdn = config.get('Cdn');
 const Host = config.get('Host');
 const Blob = config.get('Blob');
-const FullCustomDomain = config.get('FullCustomDomain');
-const CustomDomain = config.get('CustomDomain');
+const WWWDomain = config.get('WWWDomain');
+const NakedDomain = config.get('NakedDomain');
 const TrafficManager = config.get('TrafficManager');
 
 const customDomainMap = {};
@@ -116,22 +116,26 @@ async function populateHtml(site) {
 // only support l1 request if user is accessing by host or by custom domain
 // e.g. www.smartpage.com/site1
 // or smartpage.centralus.cloudapp.azure.net/site1
-// app.use('/:l1', function (req, res) {
-//     log(`handling request ${req.headers.host}${req.originalUrl}`);
-//     if (req.headers.host === FullCustomDomain
-//         || req.headers.host === Host
-//         || req.headers.host === TrafficManager
-//     ) {
-//         // user is accessing www.smartpage.com/site1
-//         populateHtml(req.originalUrl.substring(1)).then((indexHtml) => {
-//             res.send(indexHtml);
-//         });
-//     }
-//     else {
-//         res.status(404).send("Page not found!");
-//     }
-//     // }
-// });
+// or contoso.smartpage.com/suffix
+app.use('/:l1', function (req, res) {
+    log(`handling request ${req.headers.host}${req.originalUrl}`);
+    if (req.headers.host === WWWDomain
+        || req.headers.host === Host
+        || req.headers.host === TrafficManager
+        || req.headers.host.indexOf(NakedDomain) > 0
+    ) {
+        // user is accessing x.smartpage.com/y
+        const subdomain = req.headers.host.substring(0, req.headers.host.indexOf(NakedDomain) - 1);
+        const suffix = req.originalUrl.substring(1);
+        populateHtml(subdomain + '/' + suffix).then((indexHtml) => {
+            res.send(indexHtml);
+        });
+    }
+    else {
+        res.status(404).send("Page not found!");
+    }
+    // }
+});
 
 // only allow root access from subdomain, or domain from customer
 // e.g. cars.smartpage.com, in this case we need to find the mapping
@@ -140,8 +144,8 @@ async function populateHtml(site) {
 app.use('/', function (req, res) {
     log(`handling request ${req.headers.host}${req.originalUrl}`);
     // log(req);
-    if (req.headers.host !== FullCustomDomain && req.headers.host.indexOf(CustomDomain) > 0) {
-        const subdomain = req.headers.host.substring(0, req.headers.host.indexOf(CustomDomain) - 1);
+    if (req.headers.host !== WWWDomain && req.headers.host.indexOf(NakedDomain) > 0) {
+        const subdomain = req.headers.host.substring(0, req.headers.host.indexOf(NakedDomain) - 1);
         // getSubdomainMapping(subdomain).then((site) => {
         populateHtml(subdomain).then((indexHtml) => {
             res.send(indexHtml);
