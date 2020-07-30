@@ -9,19 +9,19 @@ import { Template2 } from './template2';
 export default function startApp(config) {
     // $.getJSON('./config.json').then((config) => {
     //     // const config = res.json();
-    var template;
-    switch (config.layout) {
-        case "template1":
-            template = <Template1 config={config} />;
-            break;
-        case "template2":
-            template = <Template2 config={config} />;
-            break;
-        default:
-            throw "undefined template";
-    };
+    // var template;
+    // switch (config.layout) {
+    //     case "template1":
+    //         template = <Template1 config={config} />;
+    //         break;
+    //     case "template2":
+    //         template = <Template2 config={config} />;
+    //         break;
+    //     default:
+    //         throw "undefined template";
+    // };
 
-    ReactDOM.render(template, document.getElementById('root'));
+    ReactDOM.render(<Template1 config={config} />, document.getElementById('root'));
     //});
 };
 

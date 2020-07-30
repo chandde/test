@@ -36,6 +36,7 @@ log(`https listening on port ${HttpsPort}`);
 
 const Cdn = config.get('Cdn');
 const Host = config.get('Host');
+const Blob = config.get('Blob');
 const FullCustomDomain = config.get('FullCustomDomain');
 const CustomDomain = config.get('CustomDomain');
 const TrafficManager = config.get('TrafficManager');
@@ -82,7 +83,7 @@ function getTxtContent(url) {
 // }
 
 async function getSiteVersion(site) {
-    const url = `${Cdn}pages/${site}/version.txt`;
+    const url = `${Blob}pages/${site}/version.txt`;
     return await getTxtContent(url);
 }
 

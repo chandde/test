@@ -17923,6 +17923,24 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
+var config1 = {
+  "Id": 13743895347203,
+  "Status": 109,
+  "SmartPageProperties": {
+    "SiteSuffix": "",
+    "Name": "Testing 41a28252-7fb6-4f40-995f-857059350d19",
+    "Description": "My first Smart Page test",
+    "SubDomain": "smartpagesubdomain",
+    "Attributes": {
+      "key1": "value1"
+    }
+  },
+  "SmartPageAssetIds": {
+    "ImageIds": [1],
+    "VideoIds": [3]
+  },
+  "Images": null
+};
 var template1_Template1 = /*#__PURE__*/function (_React$Component) {
   _inherits(Template1, _React$Component);
 
@@ -17937,18 +17955,16 @@ var template1_Template1 = /*#__PURE__*/function (_React$Component) {
   _createClass(Template1, [{
     key: "render",
     value: function render() {
-      document.title = this.props.config.title;
+      document.title = this.props.config.SmartPageProperties.Name;
       var style = {
         display: "inline-flex"
       };
       return /*#__PURE__*/react_default.a.createElement("div", {
         className: "smart-page-template1",
         style: style
-      }, /*#__PURE__*/react_default.a.createElement("h1", null, this.props.config.content.header), /*#__PURE__*/react_default.a.createElement("div", {
+      }, /*#__PURE__*/react_default.a.createElement("h1", null, this.props.config.SmartPageProperties.Name), /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("h1", null, this.props.config.SmartPageProperties.Description), /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("h2", null, this.props.config.SmartPageProperties.SubDomain), /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("div", {
         className: "image"
-      }, /*#__PURE__*/react_default.a.createElement("img", {
-        src: this.props.config.content.image
-      })));
+      }));
     }
   }]);
 
@@ -18026,27 +18042,20 @@ template2_Template2.PropTypes = {
 function startApp(config) {
   // $.getJSON('./config.json').then((config) => {
   //     // const config = res.json();
-  var template;
-
-  switch (config.layout) {
-    case "template1":
-      template = /*#__PURE__*/react_default.a.createElement(template1_Template1, {
-        config: config
-      });
-      break;
-
-    case "template2":
-      template = /*#__PURE__*/react_default.a.createElement(template2_Template2, {
-        config: config
-      });
-      break;
-
-    default:
-      throw "undefined template";
-  }
-
-  ;
-  react_dom_default.a.render(template, document.getElementById('root')); //});
+  // var template;
+  // switch (config.layout) {
+  //     case "template1":
+  //         template = <Template1 config={config} />;
+  //         break;
+  //     case "template2":
+  //         template = <Template2 config={config} />;
+  //         break;
+  //     default:
+  //         throw "undefined template";
+  // };
+  react_dom_default.a.render( /*#__PURE__*/react_default.a.createElement(template1_Template1, {
+    config: config
+  }), document.getElementById('root')); //});
 }
 ; // module.exports = startApp;
 

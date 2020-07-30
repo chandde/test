@@ -1,5 +1,6 @@
 {
     "Cdn": "https://bingadssmartpagetest2.azureedge.net/",
+    "Blob": "https://bingadssmartpagetest2.z19.web.core.windows.net/",
     "Host": "bingadssmartpagetest2.centralus.cloudapp.azure.com",
     "FullCustomDomain": "www.bingadssmartpagetest3.com",
     "CustomDomain": "bingadssmartpagetest3.com",
