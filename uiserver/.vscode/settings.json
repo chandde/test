@@ -1,4 +1,8 @@
 {
-    "appService.defaultWebAppToDeploy": "/subscriptions/7212670f-e052-4bca-a45c-27008f79fdd8/resourceGroups/bingadssmartpagetest2/providers/Microsoft.Web/sites/bingadssmartpagetest2appservice",
-    "appService.deploySubpath": "."
+    "appService.defaultWebAppToDeploy": "/subscriptions/7212670f-e052-4bca-a45c-27008f79fdd8/resourceGroups/bingadssmartpagetest2/providers/Microsoft.Web/sites/bingadssmartpagetest2appserviceEurope",
+    "appService.deploySubpath": ".",
+    "appService.zipIgnorePattern": [
+        ".vscode{,/**}",
+        "node_modules{,/**}",
+    ],
 }
