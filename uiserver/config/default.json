@@ -6,7 +6,7 @@
     "NakedDomain": "bingadssmartpagetest3.com",
     "TrafficManager": "bingadssmartpagetest2.trafficmanager.net",
     "HttpPort": 80,
-    "HttpsPort": 443,
+    "HttpsPort": 8080,
     "SecretKeyVaultName": "bingadssmartpagetest2",
     "SecretName": "bingadssmartpage3wildcard305b682f-f139-414f-a27a-d838b0b0d0ee"
 }
