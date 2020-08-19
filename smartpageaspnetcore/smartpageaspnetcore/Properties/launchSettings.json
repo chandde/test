@@ -27,6 +27,7 @@
         "ShortDomain": "bingadssmartpagetest3.com",
         "TrafficManager": "bingadssmartpagetest2.trafficmanager.net",
         "AppServiceDomain": "smartpageaspnetcore.azurewebsites.net",
+        "AppServiceDomainLinux": "smartpageaspnetcorelinux.azurewebsites.net",
         "Port": "8080"
       }
     }

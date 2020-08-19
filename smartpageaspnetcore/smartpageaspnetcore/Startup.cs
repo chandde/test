@@ -28,6 +28,7 @@ namespace SmartPageServer
             ShortDomain = Configuration["ShortDomain"];
             TrafficManager = Configuration["TrafficManager"];
             AppServiceDomain = Configuration["AppServiceDomain"];
+            AppServiceDomainLinux = Configuration["AppServiceDomainLinux"];
 
         }
 
@@ -44,6 +45,8 @@ namespace SmartPageServer
         public string TrafficManager { get; }
 
         public string AppServiceDomain { get; }
+
+        public string AppServiceDomainLinux { get; }
 
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -73,7 +76,7 @@ namespace SmartPageServer
                 endpoints.MapGet("/", async context =>
                 {
                     var host = context.Request.Host.Host;
-                    if(host == TrafficManager || host == AppServiceDomain)
+                    if(host == TrafficManager || host == AppServiceDomain || host == AppServiceDomainLinux)
                     {
                         context.Response.StatusCode = 200;
                         await context.Response.WriteAsync("hello world!");
