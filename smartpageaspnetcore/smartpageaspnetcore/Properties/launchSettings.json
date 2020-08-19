@@ -1,0 +1,34 @@
+﻿{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:52643",
+      "sslPort": 0
+    }
+  },
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "SmartPageServer": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "applicationUrl": "http://localhost:5000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Cdn": "https://bingadssmartpagetest2.azureedge.net/",
+        "Blob": "https://bingadssmartpagetest2.z19.web.core.windows.net/",
+        "WwwDomain": "www.bingadssmartpagetest3.com",
+        "ShortDomain": "bingadssmartpagetest3.com",
+        "TrafficManager": "bingadssmartpagetest2.trafficmanager.net",
+        "AppServiceDomain": "smartpageaspnetcore.azurewebsites.net",
+        "Port": "8080"
+      }
+    }
+  }
+}
