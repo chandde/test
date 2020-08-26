@@ -21,13 +21,6 @@
       "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "Cdn": "https://bingadssmartpagetest2.azureedge.net/",
-        "Blob": "https://bingadssmartpagetest2.z19.web.core.windows.net/",
-        "WwwDomain": "www.bingadssmartpagetest3.com",
-        "ShortDomain": "bingadssmartpagetest3.com",
-        "TrafficManager": "bingadssmartpagetest2.trafficmanager.net",
-        "AppServiceDomain": "smartpageaspnetcore.azurewebsites.net",
-        "AppServiceDomainLinux": "smartpageaspnetcorelinux.azurewebsites.net",
         "Port": "8080"
       }
     }

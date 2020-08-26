@@ -10,13 +10,25 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Net.Http;
 using System.Text;
+using System.Reflection.PortableExecutable;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.AzureAppServices;
 
 // TO DO
 // 1. fix/beautify 404
-// 2. logging, hook up with Kusto SDK
+// 2. logging
 
 namespace SmartPageServer
 {
+    public class Cache
+    {
+        public string CommonVersion { get; set; }
+
+        public string IndexHtml { get; set; }
+
+        public Dictionary<string /*page*/, string /*version*/> PageVersion { get; set; }
+    }
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -29,8 +41,15 @@ namespace SmartPageServer
             TrafficManager = Configuration["TrafficManager"];
             AppServiceDomain = Configuration["AppServiceDomain"];
             AppServiceDomainLinux = Configuration["AppServiceDomainLinux"];
+            AppServiceDomainWin = Configuration["AppServiceDomainWin"];
 
+            Cache = new Cache()
+            {
+                PageVersion = new Dictionary<string, string>(),
+            };
         }
+
+        public Cache Cache { get; set; }
 
         public IConfiguration Configuration { get; }
 
@@ -48,15 +67,15 @@ namespace SmartPageServer
 
         public string AppServiceDomainLinux { get; }
 
+        public string AppServiceDomainWin { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> Logger)
         {
             if (env.IsDevelopment())
             {
@@ -76,7 +95,9 @@ namespace SmartPageServer
                 endpoints.MapGet("/", async context =>
                 {
                     var host = context.Request.Host.Host;
-                    if(host == TrafficManager || host == AppServiceDomain || host == AppServiceDomainLinux)
+                    Logger.LogInformation(string.Format("handling request for {0}", host));
+
+                    if (host == TrafficManager || host == AppServiceDomain || host == AppServiceDomainLinux || host == AppServiceDomainWin)
                     {
                         context.Response.StatusCode = 200;
                         await context.Response.WriteAsync("hello world!");
@@ -86,7 +107,48 @@ namespace SmartPageServer
                         // we're looking at a subdomain root level access
                         // e.g. cars.smartpage.com
                         var subDomain = host.Substring(0, host.IndexOf(ShortDomain) - 1);
-                        var html = await PopulateIndexHtml(subDomain);
+
+                        bool commonVersionCacheUpdated = false;
+                        bool indexHtmlCacheUpdated = false;
+                        bool pageVersionCacheUpdated = false;
+
+                        Func<Task> ensureCommon = async () =>
+                        {
+                            if (string.IsNullOrEmpty(Cache.CommonVersion))
+                            {
+                                commonVersionCacheUpdated = true;
+
+                                Logger.LogInformation("Cache missed: common version");
+
+                                Cache.CommonVersion = await GetCommonVersion();
+                            }
+                            if (string.IsNullOrEmpty(Cache.IndexHtml))
+                            {
+                                indexHtmlCacheUpdated = true;
+
+                                Logger.LogInformation("Cache missed: index.html");
+
+                                var indexHtmlPath = string.Format("{0}common/{1}/index.html", Blob, Cache.CommonVersion);
+                                Cache.IndexHtml = await GetTextContent(indexHtmlPath);
+                            }
+                        };
+
+                        Func<Task> ensurePage = async () =>
+                        {
+                            if (!Cache.PageVersion.ContainsKey(subDomain))
+                            {
+                                pageVersionCacheUpdated = true;
+
+                                Logger.LogInformation("Cache missed: page version for " + subDomain);
+
+                                Cache.PageVersion[subDomain] = await GetPageVersion(subDomain);
+                            }
+                        };
+
+                        // TO DO concurrent access blob and wait all
+                        await Task.WhenAll(ensureCommon(), ensurePage());
+
+                        var html = PopulateIndexHtml(subDomain);
 
                         if (!String.IsNullOrEmpty(html))
                         {
@@ -98,36 +160,57 @@ namespace SmartPageServer
                             context.Response.StatusCode = 404;
                             await context.Response.WriteAsync("Page not found!");
                         }
-                    } 
+
+                        Task.Run(async () =>
+                        {
+                            // TO DO potential threading conflict if task is updating cache and a new request is accessing the cache
+                            // TO DO concurrent access blob
+                            if (!commonVersionCacheUpdated)
+                            {
+                                Logger.LogInformation("Cache hit: common version, lazy updating cache");
+                                Cache.CommonVersion = await GetCommonVersion();
+                            }
+                            if (!indexHtmlCacheUpdated)
+                            {
+                                Logger.LogInformation("Cache hit: index html, lazy updating cache");
+                                var indexHtmlPath = string.Format("{0}common/{1}/index.html", Blob, Cache.CommonVersion);
+                                Cache.IndexHtml = await GetTextContent(indexHtmlPath);
+                            }
+                            if (!pageVersionCacheUpdated)
+                            {
+                                Logger.LogInformation("Cache hit: page version, lazy updating cache " + subDomain);
+
+                                Cache.PageVersion[subDomain] = await GetPageVersion(subDomain);
+                            }
+                        }).ConfigureAwait(false);
+                    }
                     else
                     {
                         context.Response.StatusCode = 404;
                         await context.Response.WriteAsync("Page not found!");
                     }
                 });
+
+                endpoints.MapPost("/subscription", async context =>
+                {
+                    // TO DO
+                });
+
+                endpoints.MapGet("/manifest.json", async context =>
+                {
+                    context.Response.StatusCode = 200;
+                    await context.Response.WriteAsync("");
+                });
             });
         }
 
-        public async Task<string> PopulateIndexHtml(string page)
+        public string PopulateIndexHtml(string page)
         {
             var indexHtml = "";
-            var commonVersion = await GetCommonVersion();
-            if (!String.IsNullOrEmpty(commonVersion))
-            {
-                var bundlePath = string.Format("{0}common/{1}/static", Cdn, commonVersion);
-
-                var pageVersion = await GetPageVersion(page);
-
-                if (!String.IsNullOrEmpty(pageVersion))
-                {
-                    // only when we can get valid common version and page version, shall we proceed
-                    var pageConfigPath = string.Format("{0}pages/{1}/{2}/config.js", Cdn, page, pageVersion);
-
-                    var indexHtmlPath = string.Format("{0}common/{1}/index.html", Blob, commonVersion);
-                    indexHtml = await GetTextContent(indexHtmlPath);
-                    indexHtml = indexHtml.Replace("%%config.js%%", pageConfigPath).Replace("./static", bundlePath);
-                }
-            }
+            var pageVersion = Cache.PageVersion[page];
+            var bundlePath = string.Format("{0}common/{1}/static", Cdn, Cache.CommonVersion);
+            var pageConfigPath = string.Format("{0}pages/{1}/{2}/config.js", Cdn, page, pageVersion);
+            indexHtml = Cache.IndexHtml.Replace("%%config.js%%", pageConfigPath).Replace("./static", bundlePath);
 
             return indexHtml;
         }
