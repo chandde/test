@@ -18,8 +18,8 @@ namespace HomeTempFunc
     class Data
     {
         public DateTime Timestamp { get; set; }
-        public int Temp { get; set; }
-        public int humidity { get; set; }
+        public float Temp { get; set; }
+        public float humidity { get; set; }
     }
 
     public static class Temperature
@@ -44,6 +44,12 @@ namespace HomeTempFunc
                     var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                     log.LogInformation(requestBody);
                     dynamic data = JsonConvert.DeserializeObject(requestBody);
+
+                    if (data == null)
+                    {
+                        log.LogError("invalid data was received");
+                        return new BadRequestResult();
+                    }
 
                     // log.LogInformation(data);
                     if (data != null)
@@ -94,8 +100,8 @@ namespace HomeTempFunc
                                     .Select(dataRow => new Data
                                     {
                                         Timestamp = dataRow.Field<DateTime>("Timestamp"),
-                                        Temp = dataRow.Field<int>("Temp"),
-                                        humidity = dataRow.Field<int>("humidity"),
+                                        Temp = dataRow.Field<float>("Temp"),
+                                        humidity = dataRow.Field<float>("humidity"),
                                     }); // .ToList();
 
                                 return new OkObjectResult(dataList);
