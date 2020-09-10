@@ -19,16 +19,13 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-# currently scheduled to run every 10 minutes with a crontab
-# 0,10,20,30,40,50 * * * * this.py 11 4 >/dev/null 2>&1
-
 import sys
 import Adafruit_DHT
 import time
 import requests
 import json
 
+# Parse command line parameters.
 sensor_args = { '11': Adafruit_DHT.DHT11,
                 '22': Adafruit_DHT.DHT22,
                 '2302': Adafruit_DHT.AM2302 }
@@ -40,9 +37,30 @@ else:
     print('Example: sudo ./Adafruit_DHT.py 2302 4 - Read from an AM2302 connected to GPIO pin #4')
     sys.exit(1)
 
+#while True:
+
+    # Try to grab a sensor reading.  Use the read_retry method which will retry up
+    # to 15 times to get a sensor reading (waiting 2 seconds between each retry).
 humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
 
+    # Un-comment the line below to convert the temperature to Fahrenheit.
+    # temperature = temperature * 9/5.0 + 32
+
+    # Note that sometimes you won't get a reading and
+    # the results will be null (because Linux can't
+    # guarantee the timing of calls to read the sensor).
+    # If this happens try again!
 if humidity is not None and temperature is not None:
+    print(temperature);
+    print(humidity);
+    # print(time.strftime('%Y-%m-%d %H:%M:%S'))
+    # print('Temp={0:0.1f}*  Humidity={1:0.1f}%'.format(temperature, humidity))
     url = 'https://hometempfunc20200820213644.azurewebsites.net/api/Temperature'
-    myData = { 'Timestamp': time.strftime('%Y-%m-%d %H:%M:%S'), 'Temp': int(temperature), 'humidity': int(humidity) }
+    myData = { 'Timestamp': time.strftime('%Y-%m-%d %H:%M:%S'), 'Temp': '{t:.1f}'.format(t = temperature), 'humidity': '{h:.1f}'.format(h = humidity) }
     x = requests.post(url, data = json.dumps(myData))
+    # print(myData)
+    print(x)
+    # else:
+    #    print('Failed to get reading. Try again!')
+    #    sys.exit(1)
+    #time.sleep(600)
