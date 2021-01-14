@@ -3,3 +3,4 @@ uiserver/node_modules
 smartpage/node_modules
 .vs
 uiserver/*.pfx
+**/node_modules

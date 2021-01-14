@@ -1,0 +1,242 @@
+#root {
+  background-color: #FFF5F1;
+}
+.App {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* font-family: 'geomanist','Helvetica Neue',Helvetica,Arial,sans-serif; */
+  /* font-family: 'Avenir W01',"Helvetica Neue", "Helvetica", Arial, Sans-Serif; */
+  margin: auto;
+  text-align: left;
+  max-width: 1200px;
+  background: white;
+  /* padding: 20px; */
+  font-size: 16px;
+  font-weight: 400;
+}
+
+h1, h2 {
+  font-family: Segoe UI Semibold;
+}
+
+th {
+  font-weight: 400;
+}
+
+.header h1 {
+  /* padding-top: 20px; */
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.headerbg {
+  left: 0;
+  top: 0;
+  position: fixed;
+}
+
+.header {
+  background-image: url("./bellevue.jpg");
+  background-repeat: no-repeat;
+  height: 600px;
+  background-size: cover;
+  padding: 20px;
+  color: #FFF5F1;
+}
+
+.contactuslink {
+  float: right;
+  color: #FFF5F1;
+  margin-left: 20px;
+}
+
+.body {
+  padding: 20px;
+  color: #5C453A;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.langSwitch {
+  /* position: absolute;
+  top: 10px;
+  right: 10px; */
+  background: #0078d4;
+  border-color: transparent;
+  color: white;
+  font-size: 20px;
+  border-radius: 2px;
+  /* margin-top: 10px;
+  margin-left: 10px; */
+  /* position: fixed;
+  top: 10px;
+  left: 10px; */
+}
+
+.gallery img {
+  max-width: 48%;
+  min-width: 32%;
+  padding-right: 10px;
+}
+
+.contactTable {
+  width: 100%;
+  text-align: left;
+  display: inline-table;
+}
+
+.contactTable tr {
+  /* width: 100%; */
+}
+
+.contactTable th {
+  display: table-cell;
+  width: 50%;
+  height: 30px;
+}
+
+.introduction tr {
+  width: 100%;
+}
+
+.introduction th:nth-child(1) {
+  width: 30%;
+}
+
+.introduction th:nth-child(2) {
+  width: 70%;
+}
+
+.introduction img {
+  width: 100%;
+  max-width: 300px;
+  position: relative;
+  box-shadow: 3px 3px 3px 0 rgba(0,0,0,.5);
+}
+
+.phonenumber {
+  background-image: url("./phone.svg");
+}
+
+.email {
+  background-image: url("./email.svg");
+}
+
+.wechat {
+  background-image: url("./wechat.svg");
+  background-size: 60px !important;
+  background-position-x: -13px;
+  background-position-y: -2px;
+}
+
+.website {
+  background-image: url("./website.svg");
+  background-size: 22px;
+}
+
+.realtorTr {
+  vertical-align: top;
+}
+
+.realtorTr th:nth-child(2) div{
+  margin-left: 20px;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.contactwrapper {
+  display: flex;
+}
+
+.contact-item {
+  height: 40px;
+  background-repeat: no-repeat;
+  padding-left: 50px;
+  background-size: 30px;
+}
+
+.contactwrapper h2 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+@media screen and (max-width: 720px) {
+  .contactwrapper { 
+    display: inline;
+ }
+}
+
+.headerlogowrapper {
+  /* padding-top: 20px; */
+}
+
+.headerlogo {
+  height: 80px;
+}
+
+.headerleft {
+  width: 80%;
+}
+
+/* .headerrightlogo {
+  width: 50%;
+} */
+
+.headerwrapper {
+  display: flex;
+}
+
+.headerright {
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+}
+
+.headerrightinside {
+  float: right;
+  text-align: right;
+}
+
+.footer {
+  /* border-width: 2px;
+  border-color: #5C453A;
+  border-style: solid; */
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.footerimage {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+img {
+}
