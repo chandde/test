@@ -1,21 +1,33 @@
+@font-face {
+  font-family: GraublauWeb;
+  src: url("fonts/HKGrotesk-Light.otf") format("opentype");
+}
+
+@font-face {
+  font-family: GraublauWeb;
+  font-weight: SemiBold;
+  src: url("fonts/HKGrotesk-SemiBold.otf") format("opentype");
+}
+
 #root {
-  background-color: #FFF5F1;
+  background-color: #f8ecec;
 }
 .App {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
   /* font-family: 'geomanist','Helvetica Neue',Helvetica,Arial,sans-serif; */
   /* font-family: 'Avenir W01',"Helvetica Neue", "Helvetica", Arial, Sans-Serif; */
+  font-family: GraublauWeb, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: auto;
   text-align: left;
   max-width: 1200px;
   background: white;
   /* padding: 20px; */
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 400;
 }
 
-h1, h2 {
-  font-family: Segoe UI Semibold;
+h1, h2, h3 {
+  font-weight: SemiBold;
 }
 
 th {
@@ -43,18 +55,21 @@ th {
   height: 600px;
   background-size: cover;
   padding: 20px;
-  color: #FFF5F1;
+  color: #f8ecec;
+  background-position: center;
 }
 
 .contactuslink {
   float: right;
-  color: #FFF5F1;
-  margin-left: 20px;
+  color: #f8ecec;
+  top: 8px;
+  position: relative;
+  padding-left: 20px;
 }
 
 .body {
-  padding: 20px;
-  color: #5C453A;
+  padding: 30px;
+  color: #2b0606;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -213,7 +228,7 @@ th {
 }
 
 .headerright {
-  width: 20%;
+  width: 30%;
   display: flex;
   flex-direction: column;
 }
@@ -238,5 +253,81 @@ th {
   width: 50%;
 }
 
-img {
+.poweredby {
+  float: right;
+}
+
+.picturecarousel .item img {
+  width: 100%;
+  /* height: 480px !important; */
+}
+
+.picturecarousel {
+  width: 80%;
+  margin: 30px auto 40px auto;
+  box-shadow: 3px 3px 3px 0 rgba(0,0,0,.5);
+}
+
+.reviewcarousel {
+  /* height: 300px; */
+  width: 80%;
+  margin: 30px auto 40px auto;
+}
+
+.picturecarousel .carousel-inner {
+}
+
+.reviewcarousel .item {
+  padding: 10px;
+}
+
+.reviewcarousel .item .name {
+  font-family: Segoe UI Semibold;
+}
+
+.reviewheader {
+  display: flex;
+}
+
+.reviewheader .date {
+  margin-left: 30px;
+}
+
+.carousel-control {
+  background: none !important;
+  display: none;
+}
+
+i {
+  text-shadow: 1px 1px 1px #a0a0a0;
+}
+.carousel-indicators li {
+  background-color: rgb(218, 181, 218);
+}
+.carousel-indicators .active{
+  background-color: rgb(124, 31, 31);
+}
+
+.reviewcarousel .carousel-indicators {
+  bottom: -30px;
+}
+
+.picturecarousel .carousel-indicators {
+  
+}
+
+.introduction h3 {
+  margin-top: 35px !important;
+}
+
+.separator {
+  width: 90%;
+  border-color: inherit;
+  border-style: solid;
+  margin: 10px auto 10px auto;  
+  border-bottom: 1px;
+}
+
+.reviewcarousel .item {
+  height: 400px;
 }

@@ -43,6 +43,14 @@ const i18nResources = {
     "Hao Sun",
     "孙浩",
   ],
+  bettyContact: [
+    "Betty Dong - Managing Broker",
+    "董娜",
+  ],
+  haoContact: [
+    "Hao Sun - Broker",
+    "孙浩",
+  ],
   haoIntroduction: [
     "Started as a real estate agent since 2016...",
     ""
@@ -67,6 +75,57 @@ const i18nResources = {
     "Welcome to Belhomes. We're Hao and Betty, two seasoned real estate agent currently at Compass Real Estate (R). We work full time and cover your needs 7x24, whenever you need to see a property, just give us a call. We provide service in the greater seattle area, including Seattle, Bellevue, Redmond, Issaquah, Sammamish, Kirkland and more."
   ]
 };
+
+const reviews = [
+  {
+    name: 'Sam He',
+    date: '11/28/2019',
+    desc: 'Bought and sold a home in 2019 in Cougar Mountain, Bellevue, WA 98006.',
+    review: 'I have known Betty for couple of years now. She helped me a few years ago as a buyer agent and again this year as a seller agent. In both cases, I am very impressed with her professionalism and acute awareness of the real-estate markets. Selling my property wasn\'t an easy task due to a slow market and competitions from other similar prosperities on sale. But she and her partner was able to successfully sell and close the deal less than a week to a perfect buyer! I must be thankful for her expertise on timing, pricing, and negotiations skills. The staging service provided by her team was also amazing. My property looked gorgeous after transformation. Really nice job done throughout! I would definitely recommend Betty and her team if you are interested in buying/selling and I look forward to working with her again in the future.',
+  },
+  {
+    name: 'Joyce 2011',
+    date: '11/09/2019',
+    desc: 'Bought a Single Family home in 2019 in Issaquah, WA.',
+    review: 'Betty behaves so professional during the whole process of buying the new house. She is super responsive for our questions and concerns. Always giving impartial advice, respect our opinions and never pushing us to make immature decisions. With her hard work, we moved into our lovely new house after 4 months looking. Everything went smooth.',
+  },
+  {
+    name: 'ocean00paradise',
+    date: '10/31/2017',
+    desc: 'Bought a Single Family home in 2017 in Kirkland, WA.',
+    review: 'We spent almost an half year to work with Betty and finally found and bought our dream house , she exhibits the best quality of an agent which every buyer would dream of , and to be very honest is much beyond our expectations , She is extremely accountable, patient and responsive, always at call and quick in action, she really likes to spend time with us in every tours and repeatedly discuss with us to dig out our uncovered needs which we didn’t realize in the very beginning. Mostly importantly she is so insightful of local markets, and has an unique perspectives that really opens our mind and knows what kind of property we should buy, we value her opinions very much in our decision making. She is simply the best , better than any other agents that we have experienced and worked with, because she never pushes clients to buy the house , she help them to find the value of the property and deal . we strongly recommend you to work with Betty , she will be beyond your expectations.',
+  },
+  {
+    name: 'Liangmin Zhou',
+    date: '10/24/2017',
+    desc: 'Bought a Single Family home in 2017 in Sammamish, WA.',
+    review: 'We got acquainted with Betty occasionally on a friend\'s house closing day. Both my husband and I feel like she is reliable when we first met her. She has impressed us so much by her prompt reply to our questions of all kinds even during late night or weekends. She can always give you a more than satisfactory answer to our questions in housing, living, childcare and so on. As an agent, she is professional and enthusiastic in her job. She helped us going through the whole house-buying process including everything you need to do to buy a house. When we work with her, we didn\'t feel like she treats us as customers. Instead, we feel like we are more like friends or families. I would highly recommend her to anyone who plan to buy a house in great Seattle area. What she can do for you deserves your trust.',
+  },
+  {
+    name: 'Ding Luo',
+    date: '06/14/2017',
+    desc: 'Bought a Single Family home in 2016 in Snoqualmie, WA.',
+    review: 'Betty represented my wife and I during our real estate purchases. Betty easily approachable and always shows sincere care toward her clients. She knows exactly what her clients\' look for in their ideal home, utilizes her familiarity with the Greater Seattle area to deliver excellent housing sources to her client. During house visits, Betty is able to point out potential problems to her clients. When making purchase offers, not only she constructs a very strong offer, she keeps her client protected at same time. Aside from physical houses, Betty has good resources with other house-related needs. Whether it\'s house inspectors, cleaners, general contractors, loan agents, Betty only recommends the most skillful and most experience experts in each respective area. Betty is a precise communicator whom always responds very promptly. Betty sets the bar for the Seattle area agents and I wholeheartedly recommend Betty',
+  },
+  {
+    name: 'Alex Man',
+    date: '11/30/2017',
+    desc: 'Bought a Townhouse home in 2017 in Seattle, WA.',
+    review: 'Betty is very friendly, patience and very responsive. She\'s knowledgeable. She helped me to get my house below listing, then helped me to deal with some rental stuff. I highly recommend her.',
+  },
+  {
+    name: 'user88117872',
+    date: '11/02/2017',
+    desc: 'Bought a Single Family home in 2017 in Seattle, WA.',
+    review: 'Betty is definitely an All Star agent! She helped us close an investment property in red hot Seattle. We do not resident in Seattle so she was the representative to do all the works for us. Her negotiation skill is superb that she bought us a townhouse with less than listing price. She’s always responsive no matter how trivial our requests were. Definitely recommend if you are looking for someone who you can trust!',
+  },
+  {
+    name: 'nepa3',
+    date: '06/04/2017',
+    desc: 'Bought and sold a Condo home in 2016 in Issaquah, WA.',
+    review: 'Betty was my agent who help me sold my house at Seattle and also bought a very nice one at east side last year. we became friend during the months of discussion,house hunting and formalities finalization, Betty has passion about the work, and patient, but the most import quality in her is honest. I felt ease to work with her because she always listen what you want, do what she can best and never push you reluctant for her own good. Is it enough for a good agent? I think the answer is YES.',
+  }
+];
 
 function App() {  
   const getString = (name) => i18nResources[name][locale] || "missing content";
@@ -97,9 +156,20 @@ function App() {
     </div>
   );
 
+  const reviewItem = (item, active) => (<div className={`item ${active ? 'active' : ''}`}>
+    <div className="reviewheader">
+      <div className="name">{item.name}</div>
+      <div className="date">{item.date}</div>
+    </div>
+    <div className="desc">{item.desc}</div>
+    <br />
+    <br />
+    <div><i>{item.review}</i></div>
+  </div>);
+
   return (
     <div className="App">
-      <div className="header">
+      <div className="header section">
         <div className="headerwrapper">
           <div className="headerleft">
             <div className="headerlogowrapper">
@@ -118,25 +188,91 @@ function App() {
           </div>
         </div>
       </div>
-      <div className="gallery">
-        {/* <img src={img2} /> */}
-        {/* <img src={img3} />
-        <img src={img4} />
-        <img src={img1} />
-        <img src={img6} />
-        <img src={img7} />
-        <img src={img8} /> */}
-      </div>
       <div className="body">
         <h2>{getString("whoAreWeTitle")}</h2>
         <div className="generalIntroduction">
           {getString("generalIntroduction")}
         </div>
         <div className="introduction">
-          {introduction("hao", "haoIntroduction", haoPic, "Hao Sun")}
-          {introduction("betty", "bettyIntroduction", bettyPic, "Betty Dong")}
+          {introduction("haoContact", "haoIntroduction", haoPic, "Hao Sun")}
+          {introduction("bettyContact", "bettyIntroduction", bettyPic, "Betty Dong")}
         </div>
-        <h2>{getString("whatWeDoTitle")}</h2>
+        {/* <h2>{getString("whatWeDoTitle")}</h2> */}
+        <h2>Customer Review</h2>
+        <div id="myCarousel" class="carousel reviewcarousel" data-ride="carousel">
+          <ol class="carousel-indicators">
+            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel" data-slide-to="1"></li>
+            <li data-target="#myCarousel" data-slide-to="2"></li>
+            <li data-target="#myCarousel" data-slide-to="3"></li>
+            <li data-target="#myCarousel" data-slide-to="4"></li>
+            <li data-target="#myCarousel" data-slide-to="5"></li>
+            <li data-target="#myCarousel" data-slide-to="6"></li>
+            <li data-target="#myCarousel" data-slide-to="7"></li>
+          </ol>
+          <div class="carousel-inner">
+            {reviewItem(reviews[0], true)}
+            {reviewItem(reviews[1])}
+            {reviewItem(reviews[2])}
+            {reviewItem(reviews[3])}
+            {reviewItem(reviews[4])}
+            {reviewItem(reviews[5])}
+            {reviewItem(reviews[6])}
+            {reviewItem(reviews[7])}
+          </div>
+          <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="right carousel-control" href="#myCarousel" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        </div>
+        <h2>Galleries</h2>
+        <h3>All from our past transactions</h3>
+        <div id="myCarousel" class="carousel picturecarousel" data-ride="carousel">
+          <ol class="carousel-indicators">
+            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel" data-slide-to="1"></li>
+            <li data-target="#myCarousel" data-slide-to="2"></li>
+            <li data-target="#myCarousel" data-slide-to="3"></li>
+            <li data-target="#myCarousel" data-slide-to="4"></li>
+            <li data-target="#myCarousel" data-slide-to="5"></li>
+            <li data-target="#myCarousel" data-slide-to="6"></li>
+          </ol>
+          <div class="carousel-inner">
+            <div class="item active">
+              <img src={img1}/>
+            </div>
+            <div class="item">
+              <img src={img2}/>
+            </div>
+            <div class="item">
+              <img src={img3}/>
+            </div>
+            <div class="item">
+              <img src={img4}/>
+            </div>
+            <div class="item">
+              <img src={img6}/>
+            </div>
+            <div class="item">
+              <img src={img7}/>
+            </div>
+            <div class="item">
+              <img src={img8}/>
+            </div>
+          </div>
+          <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="right carousel-control" href="#myCarousel" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        </div>
         <h2 id="contactusanchor">{getString("contactUsTitle")}</h2>
         <div className="contactwrapper">
           <div className="contactTable">
@@ -156,6 +292,8 @@ function App() {
         </div>
         <div className="footer">
           <img src={footer} className="footerimage"/>
+          <div className="separator"></div>
+          <div className="poweredby">@Powered by Chandler Deng</div>
         </div>
       </div>
     </div>
