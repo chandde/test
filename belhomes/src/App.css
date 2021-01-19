@@ -30,6 +30,10 @@ h1, h2, h3 {
   font-weight: SemiBold;
 }
 
+h2 {
+  margin-top: 40px;
+}
+
 th {
   font-weight: 400;
 }
@@ -69,7 +73,7 @@ th {
 
 .body {
   padding: 30px;
-  color: #2b0606;
+  color: #361010;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -201,10 +205,32 @@ th {
   margin-bottom: 10px;
 }
 
-@media screen and (max-width: 720px) {
+@media screen and (max-width: 639px) {
   .contactwrapper { 
     display: inline;
  }
+
+ .headerlogo {
+   display: none;
+ }
+}
+
+@media screen and (min-width: 640px) {
+ .hamburgerlogo {
+   display: none;
+ }
+}
+
+.hamburgerlogo {
+  width: 30px;
+  height: 30px;
+  color: white;
+  filter: grayscale(1) invert(1);
+  margin: 10px;
+}
+
+.navbar {
+  display: none;
 }
 
 .headerlogowrapper {
@@ -324,10 +350,22 @@ i {
   width: 90%;
   border-color: inherit;
   border-style: solid;
-  margin: 10px auto 10px auto;  
+  margin: 10px auto 20px 0;
   border-bottom: 1px;
 }
 
 .reviewcarousel .item {
   height: 400px;
+}
+
+.endmark {
+  margin: 40px auto 40px auto;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  color: rgb(179, 94, 94);
+}
+
+.endmark div {
+  margin-right: 20px;
 }
