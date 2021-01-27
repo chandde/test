@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30611.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FeedJaeger", "FeedJaeger\FeedJaeger.csproj", "{663FF518-62BA-44FD-84A3-E364E057604F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jaeger.Core", "D:\git\jaeger-client-csharp\src\Jaeger.Core\Jaeger.Core.csproj", "{659192D3-A558-4932-8F5C-D649D9A61FC7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenTracing", "D:\git\opentracing-csharp\src\OpenTracing\OpenTracing.csproj", "{61BE1958-3AA5-4792-9FAF-3CB5D66A3E17}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jaeger.Senders.Thrift", "D:\git\jaeger-client-csharp\src\Senders\Jaeger.Senders.Thrift\Jaeger.Senders.Thrift.csproj", "{B31A3EA1-62CC-48FB-B5E3-ABD3ACE1FE88}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{663FF518-62BA-44FD-84A3-E364E057604F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{663FF518-62BA-44FD-84A3-E364E057604F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{663FF518-62BA-44FD-84A3-E364E057604F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{663FF518-62BA-44FD-84A3-E364E057604F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{659192D3-A558-4932-8F5C-D649D9A61FC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{659192D3-A558-4932-8F5C-D649D9A61FC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{659192D3-A558-4932-8F5C-D649D9A61FC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{659192D3-A558-4932-8F5C-D649D9A61FC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61BE1958-3AA5-4792-9FAF-3CB5D66A3E17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61BE1958-3AA5-4792-9FAF-3CB5D66A3E17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61BE1958-3AA5-4792-9FAF-3CB5D66A3E17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61BE1958-3AA5-4792-9FAF-3CB5D66A3E17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B31A3EA1-62CC-48FB-B5E3-ABD3ACE1FE88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B31A3EA1-62CC-48FB-B5E3-ABD3ACE1FE88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B31A3EA1-62CC-48FB-B5E3-ABD3ACE1FE88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B31A3EA1-62CC-48FB-B5E3-ABD3ACE1FE88}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AF99FB78-1646-4391-9419-7281F72FACB5}
+	EndGlobalSection
+EndGlobal

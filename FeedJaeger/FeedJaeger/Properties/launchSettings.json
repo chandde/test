@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "FeedJaeger": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "JAEGER_ENDPOINT": "http://192.168.1.34:14268/api/traces",
+        "JAEGER_USER": "Value",
+        "JAEGER_REPORTER_LOG_SPANS": "true",
+        "JAEGER_PASSWORD": "Value",
+        "JAEGER_SERVICE_NAME": "CampaignUIClient"
+      }
+    }
+  }
+}
