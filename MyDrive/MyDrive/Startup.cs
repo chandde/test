@@ -1,3 +1,4 @@
+using MainService.MiddleTier;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,12 +28,9 @@ namespace MainService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            // services.AddSingleton<ICache>(new Cache(Configuration.GetValue<string>("RedisServer")));
             var mySqlConnectionString = Configuration.GetConnectionString("MySql");
             services.AddDbContext<MySqlContext>(opt => opt.UseMySQL(mySqlConnectionString));
-
-            //services.AddSingleton<DbContext>(new FileContext(Configuration));
-            //services.AddSingleton<DbContext>(new UserContext(Configuration));
+            services.AddSingleton<IRepository, Repository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

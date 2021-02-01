@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MainService.MiddleTier;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,11 +14,13 @@ namespace MainService.Controllers
     {
         ICache cache;
         MySqlContext mySqlContext;
+        IRepository repo;
 
-        public UserController(MySqlContext mySqlContext)
+        public UserController(MySqlContext mySqlContext, IRepository repository)
         {
             // this.cache = cache;
             this.mySqlContext = mySqlContext;
+            this.repo = repository;
         }
 
         [HttpGet]
@@ -30,14 +33,9 @@ namespace MainService.Controllers
                 return new BadRequestResult();
             }
 
-            var user = mySqlContext.User.FirstOrDefault(u => u.UserId == userId);
+            var result = repo.GetUser(null, userId);
 
-            if (user == null)
-            {
-                return new NotFoundResult();
-            }
-
-            return user;
+            return result;
         }
 
         [HttpGet]
@@ -62,105 +60,71 @@ namespace MainService.Controllers
         // GET: UserController
         public ActionResult<User> CreateUser([FromQuery] string username)
         {
-            try
+            if (string.IsNullOrWhiteSpace(username))
             {
-                // use transaction to create user and its root folder altogether
-                using (var transaction = mySqlContext.Database.BeginTransaction())
-                {
-                    var rootFolderId = Guid.NewGuid().ToString();
-
-                    mySqlContext.User.Add(new User
-                    {
-                        UserId = Guid.NewGuid().ToString(),
-                        UserName = username,
-                        RootFolderId = rootFolderId
-                    });
-
-                    mySqlContext.File.Add(new File
-                    {
-                        FileId = rootFolderId,
-                        FileType = "Folder",
-                        CreatedAt = DateTime.Now,
-                    });
-
-                    mySqlContext.SaveChanges();
-
-                    transaction.Commit();
-                }
-
-                return mySqlContext.User.First(u => u.UserName == username);
+                return new BadRequestResult();
             }
-            catch(Exception e)
-            {
-                return new StatusCodeResult(500);
-            }
+
+            var user = repo.CreateUser(username);
+            return user;
         }
 
         [HttpGet]
         [Route("user/{userid?}/folder/{folderid?}/createfolder")]
         // GET: UserController
-        public ActionResult CreateFolder(
+        public ActionResult<File> CreateFolder(
             [FromRoute] string userid,
-            [FromRoute] string folderid,
+            [FromRoute] string parentfolderid,
             [FromQuery] string newFolder
         )
         {
             if (string.IsNullOrWhiteSpace(userid)
-                || string.IsNullOrWhiteSpace(folderid)
+                || string.IsNullOrWhiteSpace(parentfolderid)
                 || string.IsNullOrWhiteSpace(newFolder)
             )
             {
                 return new BadRequestResult();
             }
 
-            var folder = mySqlContext.File.FirstOrDefault(f => f.FileId == folderid);
-            var user = mySqlContext.User.FirstOrDefault(u => u.UserId == userid);
+            var folder = repo.GetFolder(parentfolderid);
+            var user = repo.GetUser(null, userid);
             if (folder == null || user == null)
             {
                 return new BadRequestResult();
             }
 
-            // create a new folder needs to
-            // 1. add an entry in file table
-            // 2. add an entry in folder table, a new child in parent folder
+            var file = repo.CreateFolder(userid, parentfolderid, newFolder);
 
-            using (var transaction = mySqlContext.Database.BeginTransaction())
-            {
-                var newFolderId = Guid.NewGuid().ToString();
-
-                mySqlContext.File.Add(new File {
-                    FileId = newFolderId,
-                    FileType = "Folder",
-                    FileName = newFolder,
-                    CreatedAt = DateTime.Now,
-                    ParentFolderId = folderid
-                });
-
-                //mySqlContext.Folder.Add(new Folder
-                //{
-                //    FolderId = folderid,
-                //    Child = newFolderId,
-                //});
-
-                mySqlContext.SaveChanges();
-
-                transaction.Commit();
-
-                return new OkResult();
-            }
+            return file;
         }
 
-        //// GET: UserController/Details/5
-        //public ActionResult Details(int id)
-        //{
-        //    return View();
-        //}
+        [HttpGet]
+        [Route("user/{userid?}/file/{fileid?}/delete")]
+        public ActionResult DeleteFile([FromRoute] string fileid, [FromRoute] string userid)
+        {
+            if(string.IsNullOrWhiteSpace(fileid) || string.IsNullOrWhiteSpace(userid))
+            {
+                return new BadRequestResult();
+            }
 
-        //// GET: UserController/Create
-        //public ActionResult Create()
-        //{
-        //    return View();
-        //}
+            repo.DeleteFile(fileid);
+
+            return new OkResult();
+        }
+
+        [HttpGet]
+        [Route("user/{userid?}/folder/{folderid?}/delete")]
+        public ActionResult DeleteFolder([FromRoute] string folderid, [FromRoute] string userid)
+        {
+            if (string.IsNullOrWhiteSpace(folderid) || string.IsNullOrWhiteSpace(userid))
+            {
+                return new BadRequestResult();
+            }
+
+            repo.DeleteFolder(folderid);
+
+            return new OkResult();
+        }
 
         // POST: UserController/Create
         [HttpPost]
@@ -169,47 +133,5 @@ namespace MainService.Controllers
         {
             return new OkResult();
         }
-
-        //// GET: UserController/Edit/5
-        //public ActionResult Edit(int id)
-        //{
-        //    return View();
-        //}
-
-        //// POST: UserController/Edit/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
-
-        //// GET: UserController/Delete/5
-        //public ActionResult Delete(int id)
-        //{
-        //    return View();
-        //}
-
-        //// POST: UserController/Delete/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Delete(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
     }
 }

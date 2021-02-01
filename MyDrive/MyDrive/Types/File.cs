@@ -14,6 +14,6 @@ namespace MainService
         public DateTime CreatedAt { get; set; }
         public string FileType { get; set; }
         // workaround with mysql which does not support array datatype
-        public string Content { get; set; }
+        public string SHA256 { get; set; }
     }
 }
