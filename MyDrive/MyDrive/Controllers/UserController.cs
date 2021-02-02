@@ -1,10 +1,14 @@
 ﻿using MainService.MiddleTier;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Transactions;
 
@@ -14,13 +18,13 @@ namespace MainService.Controllers
     {
         ICache cache;
         MySqlContext mySqlContext;
-        IRepository repo;
+        Repository repo;
 
-        public UserController(MySqlContext mySqlContext, IRepository repository)
+        public UserController(MySqlContext mySqlContext)
         {
             // this.cache = cache;
             this.mySqlContext = mySqlContext;
-            this.repo = repository;
+            this.repo = new Repository(mySqlContext);
         }
 
         [HttpGet]
@@ -74,26 +78,26 @@ namespace MainService.Controllers
         // GET: UserController
         public ActionResult<File> CreateFolder(
             [FromRoute] string userid,
-            [FromRoute] string parentfolderid,
+            [FromRoute] string folderid,
             [FromQuery] string newFolder
         )
         {
             if (string.IsNullOrWhiteSpace(userid)
-                || string.IsNullOrWhiteSpace(parentfolderid)
+                || string.IsNullOrWhiteSpace(folderid)
                 || string.IsNullOrWhiteSpace(newFolder)
             )
             {
                 return new BadRequestResult();
             }
 
-            var folder = repo.GetFolder(parentfolderid);
+            var folder = repo.GetFolder(folderid);
             var user = repo.GetUser(null, userid);
             if (folder == null || user == null)
             {
                 return new BadRequestResult();
             }
 
-            var file = repo.CreateFolder(userid, parentfolderid, newFolder);
+            var file = repo.CreateFolder(userid, folderid, newFolder);
 
             return file;
         }
@@ -102,7 +106,7 @@ namespace MainService.Controllers
         [Route("user/{userid?}/file/{fileid?}/delete")]
         public ActionResult DeleteFile([FromRoute] string fileid, [FromRoute] string userid)
         {
-            if(string.IsNullOrWhiteSpace(fileid) || string.IsNullOrWhiteSpace(userid))
+            if (string.IsNullOrWhiteSpace(fileid) || string.IsNullOrWhiteSpace(userid))
             {
                 return new BadRequestResult();
             }
@@ -131,6 +135,22 @@ namespace MainService.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(string userId)
         {
+            return new OkResult();
+        }
+
+        [HttpPost]
+        [Route("user/{userid?}/folder/{folderid?}/uploadfile")]
+        public async Task<ActionResult> UploadFile([FromRoute] string userid, [FromRoute] string folderid)
+        {
+            if (string.IsNullOrWhiteSpace(folderid)
+                || string.IsNullOrWhiteSpace(userid)
+            )
+            {
+                return new BadRequestResult();
+            }
+
+            var file = await repo.CreateFileAsync(userid, folderid, Request);
+
             return new OkResult();
         }
     }

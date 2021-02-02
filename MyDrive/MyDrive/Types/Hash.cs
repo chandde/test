@@ -8,7 +8,7 @@ namespace MainService
 {
     public class Hash
     {
-        public string Id { get; set; }
+        [Key]
         public string SHA256 { get; set; }
         public string URL { get; set; }
     }

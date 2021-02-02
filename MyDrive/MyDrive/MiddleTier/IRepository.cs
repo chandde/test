@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace MainService.MiddleTier
         public File GetFolder(string folderid);
         public List<File> ListFolder(string folderid);
 
-        public File CreateFile();
+        public Task<List<File>> CreateFileAsync(string userid, string folderid, HttpRequest request);
         public void DeleteFile(string fileid);
         public File DonwloadFile();
     }

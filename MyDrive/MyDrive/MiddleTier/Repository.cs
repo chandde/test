@@ -1,13 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace MainService.MiddleTier
 {
-    public class Repository : IRepository
+    public class Repository
     {
         // TO DO: split folder and user into two repos
         // TO DO: ACL implementation
@@ -162,9 +167,76 @@ namespace MainService.MiddleTier
             throw new NotImplementedException();
         }
 
-        public File CreateFile()
+        public async Task<List<File>> CreateFileAsync(string userid, string parent, HttpRequest Request)
         {
-            throw new NotImplementedException();
+            var boundary = Request.GetMultipartBoundary();
+
+            if (boundary == null)
+            {
+                throw new ArgumentException("failed to get multi part boundary from request");
+            }
+
+            var parentFolder = GetFolder(parent);
+            var user = GetUser(null, userid);
+
+            if (parentFolder == null)
+            {
+                throw new ArgumentNullException($"no folder was found with id {parent}");
+            }
+
+            if (user == null)
+            {
+                throw new ArgumentNullException($"no user was found with id {userid}");
+            }
+
+            var ret = new List<File>();
+
+            var reader = new MultipartReader(boundary, Request.Body);
+            var section = await reader.ReadNextSectionAsync();
+            while (section != null && section.GetContentDispositionHeader() != null)
+            {
+                var fileSection = section.AsFileSection();
+                var fileName = fileSection.FileName;
+                var ms = new MemoryStream();
+                await fileSection.FileStream.CopyToAsync(ms);
+                var sha = SHA256.Create().ComputeHash(ms.ToArray());
+                var shaStr = string.Join("", sha.Select(b => b.ToString("X2")));
+
+                var files = ListFolder(parent);
+                if (files.Find(f => f.FileName == fileName) != null)
+                {
+                    throw new ArgumentException($"file name {fileName} already exists in the folder {parent}");
+                }
+
+                // check SHA DB if we already have the file
+                var exsiting = mySqlContext.File.FirstOrDefault(h => h.SHA256 == shaStr);
+
+                if (exsiting == null)
+                {
+                    new AzureWorker().UploadFile(shaStr, ms);
+                    // no need to use a separate hash table, given the hash as name, fixed storage and fixed container
+                    // we can build the url for the file to download!
+                }
+
+                var fileId = Guid.NewGuid().ToString();
+
+                mySqlContext.File.Add(new File
+                {
+                    FileId = fileId,
+                    FileName = fileName,
+                    ParentFolderId = parentFolder.FileId,
+                    CreatedAt = DateTime.Now,
+                    FileType = "File",
+                    SHA256 = shaStr
+                });
+
+                mySqlContext.SaveChanges();
+
+                ret.Add(mySqlContext.File.First(f => f.FileId == fileId));
+                section = await reader.ReadNextSectionAsync();
+            }
+
+            return ret;
         }
     }
 }

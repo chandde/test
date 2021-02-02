@@ -19,7 +19,7 @@ namespace MainService
 
         public DbSet<User> User { get; set; }
 
-        public DbSet<Folder> Folder { get; set; }
+        //public DbSet<Folder> Folder { get; set; }
 
         public DbSet<Hash> Hash { get; set; }
 
