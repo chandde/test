@@ -62,14 +62,14 @@ namespace MainService.Controllers
         [HttpGet]
         [Route("user/create")]
         // GET: UserController
-        public ActionResult<User> CreateUser([FromQuery] string username)
+        public ActionResult<User> CreateUser([FromQuery] string username, [FromQuery] string password)
         {
-            if (string.IsNullOrWhiteSpace(username))
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
                 return new BadRequestResult();
             }
 
-            var user = repo.CreateUser(username);
+            var user = repo.CreateUser(username, password);
             return user;
         }
 

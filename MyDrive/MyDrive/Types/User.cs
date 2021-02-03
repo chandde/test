@@ -15,6 +15,7 @@ namespace MainService
         public string UserId { get; set; }
         public string UserName { get; set; }
         public string RootFolderId { get; set; }
+        public string PasswordSHA256 { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

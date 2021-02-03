@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace MainService.MiddleTier
@@ -51,18 +52,23 @@ namespace MainService.MiddleTier
             }
         }
 
-        public User CreateUser(string username)
+        public User CreateUser(string username, string password)
         {
             // use transaction to create user and its root folder altogether
             using (var transaction = mySqlContext.Database.BeginTransaction())
             {
                 var rootFolderId = Guid.NewGuid().ToString();
 
+
+                var passwordsha = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(password));
+                var passwordshaStr = string.Join("", passwordsha.Select(b => b.ToString("X2")));
+
                 mySqlContext.User.Add(new User
                 {
                     UserId = Guid.NewGuid().ToString(),
                     UserName = username,
-                    RootFolderId = rootFolderId
+                    RootFolderId = rootFolderId,
+                    PasswordSHA256 = passwordshaStr
                 });
 
                 mySqlContext.File.Add(new File

@@ -27,10 +27,17 @@ namespace MainService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins("*");
+                    });
+            });
             services.AddControllers();
             var mySqlConnectionString = Configuration.GetConnectionString("MySql");
             services.AddDbContext<MySqlContext>(opt => opt.UseMySQL(mySqlConnectionString));
-            //services.AddSingleton<IRepository, Repository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
