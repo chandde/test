@@ -52,6 +52,10 @@ namespace MainService
 
             app.UseRouting();
 
+            // use this to serve the compiled static react app from wwwroot
+            // manually defined controllers are all for data requests
+            app.UseStaticFiles();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
