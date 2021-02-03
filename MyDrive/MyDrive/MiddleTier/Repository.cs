@@ -19,10 +19,12 @@ namespace MainService.MiddleTier
         // TO DO: ACL implementation
 
         MySqlContext mySqlContext;
+        Authentication auth;
 
-        public Repository(MySqlContext mySqlContext)
+        public Repository(MySqlContext mySqlContext, Authentication auth)
         {
             this.mySqlContext = mySqlContext;
+            this.auth = auth;
         }
 
         public File CreateFolder(string userid, string parentfolderid, string foldername)
@@ -86,6 +88,25 @@ namespace MainService.MiddleTier
             return mySqlContext.User.First(u => u.UserName == username);
         }
 
+        public string Authenticate(string username, string password)
+        {
+            // validate username and password
+            // generate token and return
+
+            // generate SHA256 on password
+            var sha = SHA256.Create().ComputeHash(Encoding.ASCII.GetBytes(password));
+            var shaStr = string.Join("", sha.Select(b => b.ToString("X2")));
+
+            var user = mySqlContext.User.SingleOrDefault(u => u.UserName == username && u.PasswordSHA256 == shaStr);
+
+            if (user == null)
+            {
+                return "";
+            }
+
+            return auth.GenerateJwtTokenForUser(user);
+        }
+
         public void DeleteFile(string fileid)
         {
             // 1. remove entry from file table
@@ -100,13 +121,15 @@ namespace MainService.MiddleTier
                     mySqlContext.File.Remove(file);
                     mySqlContext.SaveChanges();
 
-                    var filesWithSameSHA = mySqlContext.File.Select(f => f.SHA256 == file.SHA256);
-                    if (filesWithSameSHA.Count() == 0)
-                    {
-                        // no more file using the SHA
-                        mySqlContext.Hash.Remove(mySqlContext.Hash.First(h => h.SHA256 == sha256));
-                        mySqlContext.SaveChanges();
-                    }
+                    // TODO: reimplement below logic as we no longer use Hash table
+                    // if the same hash is no longer used by any file, delete it from Azure blob
+                    //var filesWithSameSHA = mySqlContext.File.Select(f => f.SHA256 == file.SHA256);
+                    //if (filesWithSameSHA.Count() == 0)
+                    //{
+                    //    // no more file using the SHA
+                    //    mySqlContext.Hash.Remove(mySqlContext.Hash.First(h => h.SHA256 == sha256));
+                    //    mySqlContext.SaveChanges();
+                    //}
                 }
 
                 transaction.Commit();

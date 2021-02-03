@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,11 +21,11 @@ namespace MainService.Controllers
         MySqlContext mySqlContext;
         Repository repo;
 
-        public UserController(MySqlContext mySqlContext)
+        public UserController(MySqlContext mySqlContext, IConfiguration configuration)
         {
             // this.cache = cache;
             this.mySqlContext = mySqlContext;
-            this.repo = new Repository(mySqlContext);
+            this.repo = new Repository(mySqlContext, new Authentication(configuration));
         }
 
         [HttpGet]
@@ -72,6 +73,21 @@ namespace MainService.Controllers
             var user = repo.CreateUser(username, password);
             return user;
         }
+
+        [HttpGet]
+        [Route("user/authenticate")]
+        // GET: UserController
+        public ActionResult<User> Authenticate([FromQuery] string username, [FromQuery] string password)
+        {
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+            {
+                return new BadRequestResult();
+            }
+
+            var token = repo.Authenticate(username, password);
+            return new OkObjectResult(token);
+        }
+
 
         [HttpGet]
         [Route("user/{userid?}/folder/{folderid?}/createfolder")]
@@ -152,6 +168,24 @@ namespace MainService.Controllers
             var file = await repo.CreateFileAsync(userid, folderid, Request);
 
             return new OkResult();
+        }
+
+        [HttpGet]
+        [Route("user/{userid?}/folder/{folderid?}/list")]
+        public ActionResult<List<File>> ListFolder([FromRoute] string userid, [FromRoute] string folderid, [FromQuery] string token)
+        {
+            if (string.IsNullOrWhiteSpace(folderid)
+                || string.IsNullOrWhiteSpace(userid)
+                || string.IsNullOrWhiteSpace(token)
+            )
+            {
+                return new BadRequestResult();
+            }
+
+            // TO DO: token validation
+            var files = repo.ListFolder(folderid);
+
+            return new OkObjectResult(files);
         }
     }
 }
