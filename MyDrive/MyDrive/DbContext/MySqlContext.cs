@@ -10,7 +10,7 @@ namespace MainService
 {
     public class MySqlContext : DbContext
     {
-        public MySqlContext(IConfiguration configuration, DbContextOptions<MySqlContext> options)
+        public MySqlContext(DbContextOptions<MySqlContext> options)
             : base(options)
         {
         }

@@ -1,13 +1,18 @@
 import { Redirect } from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import Promise from 'bluebird';
 
 import { SessionContext } from './context';
 import { listFolder } from './service';
 
 export function HomePage() {
-    const callback = () => {
+    const [files, setFiles] = useState(null);
 
+    const callback = (response) => {
+        if (response) {
+            var list = JSON.parse(response);
+            setFiles(list);
+        }
     };
 
     const errorcallback = () => {
@@ -15,21 +20,24 @@ export function HomePage() {
     };
 
     const context = useContext(SessionContext);
-    if (!context.globalContext || !context.globalContext.userId) {
-        return <Redirect to="/login" />;
-    } else {
-        return Promise.resolve(listFolder(
-            context.globalContext.userId,
-            context.globalContext.folderId,
-            context.globalContext.token,
-            callback,
-            errorcallback
-        )).then((response) => {
-            // serialze response into a list of files
-            const files = JSON.parse(response);
-            
-        }).catch((error) => {
 
-        });
+    if(!files) {
+        if (!context.globalContext || !context.globalContext.userId) {
+            return <Redirect to="/login" />;
+        } else {
+            listFolder(
+                context.globalContext.userId,
+                context.globalContext.folderId,
+                context.globalContext.token,
+                callback,
+                errorcallback
+            );
+        }
     }
+
+    if(!files || files.length === 0) {
+        return (<div>Seems you don't have anything here..</div>);
+    }
+    
+    return (<div>{`You have ${files.length} files here!`}</div>)
 };

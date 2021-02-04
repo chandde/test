@@ -1,4 +1,5 @@
 ﻿using MainService.MiddleTier;
+using MainService.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -20,30 +21,34 @@ namespace MainService.Controllers
         ICache cache;
         MySqlContext mySqlContext;
         Repository repo;
+        Authentication auth;
 
-        public UserController(MySqlContext mySqlContext, IConfiguration configuration)
+        public UserController(MySqlContext mySqlContext, IConfiguration configuration, Repository repo, Authentication auth)
         {
             // this.cache = cache;
             this.mySqlContext = mySqlContext;
-            this.repo = new Repository(mySqlContext, new Authentication(configuration));
+            this.repo = repo;
+            this.auth = auth;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("user")]
         // GET: UserController
-        public ActionResult<User> GetUserById([FromQuery] string userId)
+        public ActionResult<User> GetUserById()
         {
-            if (string.IsNullOrWhiteSpace(userId))
+            var clientContext = HttpContext.Items["ClientContext"] as ClientContext;
+
+            if (string.IsNullOrWhiteSpace(clientContext.UserId))
             {
                 return new BadRequestResult();
             }
 
-            var result = repo.GetUser(null, userId);
+            var result = repo.GetUser(clientContext);
 
             return result;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("user/all")]
         // GET: UserController
         public ActionResult<List<User>> GetAllUsers()
@@ -60,130 +65,132 @@ namespace MainService.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("user/create")]
+        [HttpPost]
+        [Route("/createuser")]
         // GET: UserController
-        public ActionResult<User> CreateUser([FromQuery] string username, [FromQuery] string password)
+        public ActionResult<User> CreateUser()
         {
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+            var clientContext = HttpContext.Items["ClientContext"] as ClientContext;
+
+            if (clientContext == null || string.IsNullOrWhiteSpace(clientContext.UserName) || string.IsNullOrWhiteSpace(clientContext.Password))
             {
                 return new BadRequestResult();
             }
 
-            var user = repo.CreateUser(username, password);
+            var user = repo.CreateUser(clientContext);
             return user;
         }
 
-        [HttpGet]
-        [Route("user/authenticate")]
+        [HttpPost]
+        [Route("/authenticate")]
         // GET: UserController
-        public ActionResult<User> Authenticate([FromQuery] string username, [FromQuery] string password)
+        public ActionResult<User> Authenticate()
         {
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+            var clientContext = HttpContext.Items["ClientContext"] as ClientContext;
+
+            if (string.IsNullOrWhiteSpace(clientContext.UserName) || string.IsNullOrWhiteSpace(clientContext.Password))
             {
                 return new BadRequestResult();
             }
 
-            var token = repo.Authenticate(username, password);
+            var token = repo.Authenticate(clientContext);
             return new OkObjectResult(token);
         }
 
 
-        [HttpGet]
-        [Route("user/{userid?}/folder/{folderid?}/createfolder")]
+        [HttpPost]
+        [Route("/createfolder")]
         // GET: UserController
-        public ActionResult<File> CreateFolder(
-            [FromRoute] string userid,
-            [FromRoute] string folderid,
-            [FromQuery] string newFolder
-        )
+        public ActionResult<File> CreateFolder()
         {
-            if (string.IsNullOrWhiteSpace(userid)
-                || string.IsNullOrWhiteSpace(folderid)
-                || string.IsNullOrWhiteSpace(newFolder)
+            var clientContext = HttpContext.Items["ClientContext"] as ClientContext;
+
+            if (string.IsNullOrWhiteSpace(clientContext.UserId)
+                || string.IsNullOrWhiteSpace(clientContext.FolderId)
+                || string.IsNullOrWhiteSpace(clientContext.FileName)
             )
             {
                 return new BadRequestResult();
             }
 
-            var folder = repo.GetFolder(folderid);
-            var user = repo.GetUser(null, userid);
-            if (folder == null || user == null)
-            {
-                return new BadRequestResult();
-            }
-
-            var file = repo.CreateFolder(userid, folderid, newFolder);
+            var file = repo.CreateFolder(clientContext);
 
             return file;
         }
 
-        [HttpGet]
-        [Route("user/{userid?}/file/{fileid?}/delete")]
-        public ActionResult DeleteFile([FromRoute] string fileid, [FromRoute] string userid)
-        {
-            if (string.IsNullOrWhiteSpace(fileid) || string.IsNullOrWhiteSpace(userid))
-            {
-                return new BadRequestResult();
-            }
-
-            repo.DeleteFile(fileid);
-
-            return new OkResult();
-        }
-
-        [HttpGet]
-        [Route("user/{userid?}/folder/{folderid?}/delete")]
-        public ActionResult DeleteFolder([FromRoute] string folderid, [FromRoute] string userid)
-        {
-            if (string.IsNullOrWhiteSpace(folderid) || string.IsNullOrWhiteSpace(userid))
-            {
-                return new BadRequestResult();
-            }
-
-            repo.DeleteFolder(folderid);
-
-            return new OkResult();
-        }
-
-        // POST: UserController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(string userId)
+        [Route("user/deletefile")]
+        public ActionResult DeleteFile()
         {
-            return new OkResult();
-        }
+            var clientContext = HttpContext.Items["ClientContext"] as ClientContext;
 
-        [HttpPost]
-        [Route("user/{userid?}/folder/{folderid?}/uploadfile")]
-        public async Task<ActionResult> UploadFile([FromRoute] string userid, [FromRoute] string folderid)
-        {
-            if (string.IsNullOrWhiteSpace(folderid)
-                || string.IsNullOrWhiteSpace(userid)
+            if (string.IsNullOrWhiteSpace(clientContext.FileId)
+                || string.IsNullOrWhiteSpace(clientContext.UserId)
             )
             {
                 return new BadRequestResult();
             }
 
-            var file = await repo.CreateFileAsync(userid, folderid, Request);
+            repo.DeleteFile(clientContext);
 
             return new OkResult();
         }
 
-        [HttpGet]
-        [Route("user/{userid?}/folder/{folderid?}/list")]
-        public ActionResult<List<File>> ListFolder([FromRoute] string userid, [FromRoute] string folderid, [FromQuery] string token)
+        //[HttpGet]
+        //[Route("user/{userid?}/folder/{folderid?}/delete")]
+        //public ActionResult DeleteFolder([FromRoute] string folderid, [FromRoute] string userid)
+        //{
+        //    if (string.IsNullOrWhiteSpace(folderid) || string.IsNullOrWhiteSpace(userid))
+        //    {
+        //        return new BadRequestResult();
+        //    }
+
+        //    repo.DeleteFolder(folderid);
+
+        //    return new OkResult();
+        //}
+
+        // POST: UserController/Create
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Create(string userId)
+        //{
+        //    return new OkResult();
+        //}
+
+        [HttpPost]
+        [Route("/uploadfile")]
+        public async Task<ActionResult> UploadFile()
         {
-            if (string.IsNullOrWhiteSpace(folderid)
-                || string.IsNullOrWhiteSpace(userid)
-                || string.IsNullOrWhiteSpace(token)
+            var clientContext = HttpContext.Items["ClientContext"] as ClientContext;
+            if (string.IsNullOrWhiteSpace(clientContext.FolderId)
+                || string.IsNullOrWhiteSpace(clientContext.UserId)
+            )
+            {
+                return new BadRequestResult();
+            }
+
+            var file = await repo.CreateFileAsync(HttpContext);
+
+            return new OkResult();
+        }
+
+        [HttpPost]
+        [Route("/listfolder")]
+        public ActionResult<List<File>> ListFolder()
+        {
+            var clientContext = HttpContext.Items["ClientContext"] as ClientContext;
+
+            if (clientContext == null
+                || string.IsNullOrWhiteSpace(clientContext.FolderId)
+                || string.IsNullOrWhiteSpace(clientContext.UserId)
             )
             {
                 return new BadRequestResult();
             }
 
             // TO DO: token validation
-            var files = repo.ListFolder(folderid);
+            var files = repo.ListFolder(clientContext);
 
             return new OkObjectResult(files);
         }

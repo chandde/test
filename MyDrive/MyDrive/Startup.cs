@@ -38,6 +38,10 @@ namespace MainService
             services.AddControllers();
             var mySqlConnectionString = Configuration.GetConnectionString("MySql");
             services.AddDbContext<MySqlContext>(opt => opt.UseMySQL(mySqlConnectionString));
+
+            services.AddScoped<Repository>();
+            services.AddScoped<AzureWorker>();
+            services.AddScoped<Authentication>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +61,8 @@ namespace MainService
             app.UseStaticFiles();
 
             app.UseAuthorization();
+
+            app.UseMiddleware<ContextMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

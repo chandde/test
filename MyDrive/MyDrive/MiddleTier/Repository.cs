@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MainService.Types;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
@@ -27,7 +28,7 @@ namespace MainService.MiddleTier
             this.auth = auth;
         }
 
-        public File CreateFolder(string userid, string parentfolderid, string foldername)
+        public File CreateFolder(ClientContext context)
         {
             // create a new folder needs to
             // 1. add an entry in file table
@@ -41,9 +42,9 @@ namespace MainService.MiddleTier
                 {
                     FileId = newFolderId,
                     FileType = "Folder",
-                    FileName = foldername,
+                    FileName = context.FileName, // file id and file name in context is for new folder 
                     CreatedAt = DateTime.Now,
-                    ParentFolderId = parentfolderid
+                    ParentFolderId = context.FolderId // parent folder id
                 };
 
                 mySqlContext.File.Add(folder);
@@ -54,7 +55,7 @@ namespace MainService.MiddleTier
             }
         }
 
-        public User CreateUser(string username, string password)
+        public User CreateUser(ClientContext clientContext)
         {
             // use transaction to create user and its root folder altogether
             using (var transaction = mySqlContext.Database.BeginTransaction())
@@ -62,13 +63,13 @@ namespace MainService.MiddleTier
                 var rootFolderId = Guid.NewGuid().ToString();
 
 
-                var passwordsha = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(password));
+                var passwordsha = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(clientContext.Password));
                 var passwordshaStr = string.Join("", passwordsha.Select(b => b.ToString("X2")));
 
                 mySqlContext.User.Add(new User
                 {
                     UserId = Guid.NewGuid().ToString(),
-                    UserName = username,
+                    UserName = clientContext.UserName,
                     RootFolderId = rootFolderId,
                     PasswordSHA256 = passwordshaStr
                 });
@@ -85,19 +86,19 @@ namespace MainService.MiddleTier
                 transaction.Commit();
             }
 
-            return mySqlContext.User.First(u => u.UserName == username);
+            return mySqlContext.User.First(u => u.UserName == clientContext.UserName);
         }
 
-        public string Authenticate(string username, string password)
+        public string Authenticate(ClientContext clientContext)
         {
             // validate username and password
             // generate token and return
 
             // generate SHA256 on password
-            var sha = SHA256.Create().ComputeHash(Encoding.ASCII.GetBytes(password));
+            var sha = SHA256.Create().ComputeHash(Encoding.ASCII.GetBytes(clientContext.Password));
             var shaStr = string.Join("", sha.Select(b => b.ToString("X2")));
 
-            var user = mySqlContext.User.SingleOrDefault(u => u.UserName == username && u.PasswordSHA256 == shaStr);
+            var user = mySqlContext.User.SingleOrDefault(u => u.UserName == clientContext.UserName && u.PasswordSHA256 == shaStr);
 
             if (user == null)
             {
@@ -107,14 +108,31 @@ namespace MainService.MiddleTier
             return auth.GenerateJwtTokenForUser(user);
         }
 
-        public void DeleteFile(string fileid)
+
+
+        // TO DO make this middleware
+        bool ValidateToken(string token, string userid)
+        {
+            var useridfromtoken = auth.ValidateAndExtractToken(token);
+            if (string.IsNullOrWhiteSpace(useridfromtoken) || useridfromtoken != userid)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public void DeleteFile(ClientContext context)
         {
             // 1. remove entry from file table
             // 2. search for sha256 in file table, if no more references, remove its entry from hash table
             // use transaction to create user and its root folder altogether
+
+            // TO DO: verify user has access to the file
+
             using (var transaction = mySqlContext.Database.BeginTransaction())
             {
-                var file = mySqlContext.File.FirstOrDefault(f => f.FileId == fileid);
+                var file = mySqlContext.File.FirstOrDefault(f => f.FileId == context.FileId);
                 if (file != null)
                 {
                     var sha256 = file.SHA256;
@@ -147,41 +165,33 @@ namespace MainService.MiddleTier
         {
             throw new NotImplementedException();
         }
-        public File GetFolder(string folderid)
+        public File GetFolder(ClientContext context)
         {
-            return mySqlContext.File.FirstOrDefault(f => f.FileId == folderid && f.FileType == "Folder");
+            return mySqlContext.File.FirstOrDefault(f => f.FileId == context.FolderId && f.FileType == "Folder");
         }
 
-        public List<File> ListFolder(string folderid)
+        public List<File> ListFolder(ClientContext context)
         {
-            if (string.IsNullOrWhiteSpace(folderid))
+            if (string.IsNullOrWhiteSpace(context.FolderId))
             {
                 throw new Exception("missing folderid");
             }
 
-            var files = mySqlContext.File.Where(f => f.ParentFolderId == folderid);
+            var files = mySqlContext.File.Where(f => f.ParentFolderId == context.FolderId);
 
             // it's possible to have an empty folder without any content
-            return files.ToList();
+            return new List<File>(files);
         }
 
-        public User GetUser(string username, string userid)
+        public User GetUser(ClientContext context)
         {
-            if (string.IsNullOrWhiteSpace(username) && string.IsNullOrWhiteSpace(userid))
+            if (string.IsNullOrWhiteSpace(context.UserId))
             {
                 throw new Exception("username and userid both are empty");
             }
 
             User user = null;
-
-            if (string.IsNullOrWhiteSpace(username))
-            {
-                user = mySqlContext.User.FirstOrDefault(u => u.UserId == userid);
-            }
-            else
-            {
-                user = mySqlContext.User.FirstOrDefault(u => u.UserName == username);
-            }
+            user = mySqlContext.User.FirstOrDefault(u => u.UserId == context.UserId);
 
             return user;
         }
@@ -196,31 +206,33 @@ namespace MainService.MiddleTier
             throw new NotImplementedException();
         }
 
-        public async Task<List<File>> CreateFileAsync(string userid, string parent, HttpRequest Request)
+        public async Task<List<File>> CreateFileAsync(HttpContext httpContext)
         {
-            var boundary = Request.GetMultipartBoundary();
+            var boundary = httpContext.Request.GetMultipartBoundary();
 
             if (boundary == null)
             {
                 throw new ArgumentException("failed to get multi part boundary from request");
             }
 
-            var parentFolder = GetFolder(parent);
-            var user = GetUser(null, userid);
+            var clientContext = httpContext.Items["ClientContext"] as ClientContext;
+
+            var parentFolder = GetFolder(clientContext);
+            var user = GetUser(clientContext);
 
             if (parentFolder == null)
             {
-                throw new ArgumentNullException($"no folder was found with id {parent}");
+                throw new ArgumentNullException($"no folder was found with id {clientContext.FolderId}");
             }
 
             if (user == null)
             {
-                throw new ArgumentNullException($"no user was found with id {userid}");
+                throw new ArgumentNullException($"no user was found with id {clientContext.UserId}");
             }
 
             var ret = new List<File>();
 
-            var reader = new MultipartReader(boundary, Request.Body);
+            var reader = new MultipartReader(boundary, httpContext.Request.Body);
             var section = await reader.ReadNextSectionAsync();
             while (section != null && section.GetContentDispositionHeader() != null)
             {
@@ -231,10 +243,10 @@ namespace MainService.MiddleTier
                 var sha = SHA256.Create().ComputeHash(ms.ToArray());
                 var shaStr = string.Join("", sha.Select(b => b.ToString("X2")));
 
-                var files = ListFolder(parent);
+                var files = ListFolder(clientContext);
                 if (files.Find(f => f.FileName == fileName) != null)
                 {
-                    throw new ArgumentException($"file name {fileName} already exists in the folder {parent}");
+                    throw new ArgumentException($"file name {fileName} already exists in the folder {clientContext.FolderId}");
                 }
 
                 // check SHA DB if we already have the file

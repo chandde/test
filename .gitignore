@@ -4,3 +4,4 @@ smartpage/node_modules
 .vs
 uiserver/*.pfx
 **/node_modules
+**/launchSettings.json
