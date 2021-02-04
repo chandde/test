@@ -93,8 +93,18 @@ namespace MainService.Controllers
                 return new BadRequestResult();
             }
 
-            var token = repo.Authenticate(clientContext);
-            return new OkObjectResult(token);
+            repo.Authenticate(clientContext, out var user, out var token);
+
+            if (user != null && !string.IsNullOrWhiteSpace(token))
+            {
+                HttpContext.Response.Cookies.Append("jwttokencookie", token);
+                HttpContext.Response.Cookies.Append("userid", user.UserId);
+                HttpContext.Response.Cookies.Append("folderid", user.RootFolderId);
+                HttpContext.Response.Cookies.Append("username", user.UserName);
+                return new OkObjectResult(token);
+            }
+
+            return new BadRequestResult();
         }
 
 

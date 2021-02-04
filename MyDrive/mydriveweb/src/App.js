@@ -9,7 +9,22 @@ import { HomePage } from './homepage';
 import { RegisterPage } from './registerpage';
 
 function App() {
-  const [context, setContext] = useState(null);
+  const getCookie = (name) => document.cookie
+    .split('; ')
+    .find(row => row.startsWith(name))
+    .split('=')[1];
+
+  const userId = getCookie("userid");
+  const folderId = getCookie("folderid");
+  const token = getCookie("jwttokencookie");
+  const userName = getCookie("username");
+
+  const [context, setContext] = useState({
+    userId,
+    userName,
+    folderId,
+    token,
+  });
 
   const updateContext = (newContext) => {
     setContext(_.defaults(newContext, context));

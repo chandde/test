@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 const ServiceHost = "https://localhost:44370/";
 
 export function CreateUser(username, password, callback, errorcallback) {
@@ -27,7 +29,9 @@ export function Login(username, password, callback, errorcallback) {
 export function listFolder(userid, folderid, token, callback, errorcallback) {
     const xhr = new XMLHttpRequest();
     xhr.onload = () => callback(xhr.response);
-    xhr.onerror = () => errorcallback(xhr.status);
+    xhr.onerror = () => {
+        errorcallback(xhr.status);
+    }
     xhr.open('POST', `${ServiceHost}listfolder`);
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
     xhr.send(JSON.stringify({
@@ -40,6 +44,19 @@ export function CreateFolder(userid, parentfolderid, foldername) {
 
 };
 
-export function UploadFile(userid, folderid, files, token) {
+export function UploadFiles(userid, folderid, files, token, callback, errorcallback) {    
+    const formData = new FormData();
 
-}
+    // Update the formData object
+    _.each(files, file => formData.append(
+      "file",
+      file,
+      file.name
+    ));
+    const xhr = new XMLHttpRequest();
+    xhr.onload = () => callback(xhr.response);
+    xhr.onerror = () => errorcallback(xhr.status);
+    xhr.open('POST', `${ServiceHost}uploadfile?userid=${userid}&folderid=${folderid}`);
+    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+    xhr.send(formData);
+};

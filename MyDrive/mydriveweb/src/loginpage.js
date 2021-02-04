@@ -29,7 +29,6 @@ export function LoginPage() {
     const loginCallback = (response) => {
         if (response) {
             var decoded = jwt_decode(response);
-            console.log(context);
             context.updateContext({
                 userId: decoded.userid,
                 userName: decoded.username,

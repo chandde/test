@@ -89,7 +89,7 @@ namespace MainService.MiddleTier
             return mySqlContext.User.First(u => u.UserName == clientContext.UserName);
         }
 
-        public string Authenticate(ClientContext clientContext)
+        public void Authenticate(ClientContext clientContext, out User user, out string token)
         {
             // validate username and password
             // generate token and return
@@ -98,14 +98,8 @@ namespace MainService.MiddleTier
             var sha = SHA256.Create().ComputeHash(Encoding.ASCII.GetBytes(clientContext.Password));
             var shaStr = string.Join("", sha.Select(b => b.ToString("X2")));
 
-            var user = mySqlContext.User.SingleOrDefault(u => u.UserName == clientContext.UserName && u.PasswordSHA256 == shaStr);
-
-            if (user == null)
-            {
-                return "";
-            }
-
-            return auth.GenerateJwtTokenForUser(user);
+            user = mySqlContext.User.SingleOrDefault(u => u.UserName == clientContext.UserName && u.PasswordSHA256 == shaStr);
+            token = auth.GenerateJwtTokenForUser(user);
         }
 
 

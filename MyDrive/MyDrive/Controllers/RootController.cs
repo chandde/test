@@ -15,5 +15,13 @@ namespace MainService.Controllers
         {
             return new RedirectResult("/index.html");
         }
+
+        [HttpGet]
+        [Route("/login")]
+        // GET: UserController
+        public ActionResult Login([FromQuery] string userId)
+        {
+            return new RedirectResult("/index.html");
+        }
     }
 }
