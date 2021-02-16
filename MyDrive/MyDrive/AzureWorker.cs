@@ -30,6 +30,17 @@ namespace MainService
             containerClient.UploadBlob(filename, content);
         }
 
+        public async Task<Byte[]> DownloadFile(string hash)
+        {
+            var blob = containerClient.GetBlobClient(hash);
+            BlobDownloadInfo downloadInfo = await blob.DownloadAsync();
+            using (var memoryStream = new MemoryStream())
+            {
+                downloadInfo.Content.CopyTo(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
+
         public void DeleteFile(string url)
         {
         }

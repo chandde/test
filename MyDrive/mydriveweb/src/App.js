@@ -9,10 +9,15 @@ import { HomePage } from './homepage';
 import { RegisterPage } from './registerpage';
 
 function App() {
-  const getCookie = (name) => document.cookie
-    .split('; ')
-    .find(row => row.startsWith(name))
-    .split('=')[1];
+  const getCookie = (name) => {
+    const row = document.cookie
+      .split('; ')
+      .find(row => row.startsWith(name));
+
+    if (row) {
+      return row.split('=')[1];
+    }
+  };
 
   const userId = getCookie("userid");
   const folderId = getCookie("folderid");

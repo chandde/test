@@ -155,10 +155,45 @@ namespace MainService.MiddleTier
 
         }
 
-        public File DonwloadFile()
+        public async Task<Byte[]> DownloadFile(ClientContext context, string fileid)
         {
-            throw new NotImplementedException();
+            // verify user has access to the file
+            var file = mySqlContext.File.SingleOrDefault(f => f.FileId == fileid);
+            if (file == null)
+            {
+                throw new Exception($"file {fileid} does not exist");
+            }
+
+            var folder = mySqlContext.File.SingleOrDefault(f => f.FileId == file.ParentFolderId);
+            if (folder == null)
+            {
+                throw new Exception($"could not find container folder {file.ParentFolderId}");
+            }
+
+            // recursively look for parent folder until root, whose ParentFolderId is null
+            while (folder.ParentFolderId != null)
+            {
+                folder = mySqlContext.File.SingleOrDefault(f => f.FileId == folder.ParentFolderId);
+            }
+
+            // now we have the root folder, check if user owns the root folder
+            var user = mySqlContext.User.SingleOrDefault(u => u.UserId == context.UserId);
+            if (user == null)
+            {
+                throw new Exception($"could not find user {context.UserId}");
+            }
+
+            if (user.RootFolderId != folder.FileId)
+            {
+                throw new Exception($"user {user.UserId} does not own root folder {folder.FileId} for file {file.FileId}");
+            }
+
+            // call azure worker to download file
+            var content = await new AzureWorker().DownloadFile(file.SHA256);
+
+            return content;
         }
+
         public File GetFolder(ClientContext context)
         {
             return mySqlContext.File.FirstOrDefault(f => f.FileId == context.FolderId && f.FileType == "Folder");
@@ -198,6 +233,12 @@ namespace MainService.MiddleTier
         public User UpdateUser(string username)
         {
             throw new NotImplementedException();
+        }
+
+        public string GetParent(ClientContext context)
+        {
+            var folder = mySqlContext.File.SingleOrDefault(f => f.FileId == context.FolderId);
+            return folder?.ParentFolderId;
         }
 
         public async Task<List<File>> CreateFileAsync(HttpContext httpContext)

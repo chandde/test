@@ -92,6 +92,12 @@ namespace MainService
 
             if (string.IsNullOrWhiteSpace(userid))
             {
+                httpContext.Response.StatusCode = 401;
+                foreach (var cookie in httpContext.Request.Cookies)
+                {
+                    httpContext.Response.Cookies.Delete(cookie.Key);
+                }
+                await httpContext.Response.WriteAsync("token has been expired");
                 return;
             }
 

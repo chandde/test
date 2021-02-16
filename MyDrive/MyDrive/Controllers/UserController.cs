@@ -169,6 +169,21 @@ namespace MainService.Controllers
         //}
 
         [HttpPost]
+        [Route("/getparent")]
+        public ActionResult GetParent()
+        {
+            var clientContext = HttpContext.Items["ClientContext"] as ClientContext;
+            if (string.IsNullOrWhiteSpace(clientContext.FolderId)
+                || string.IsNullOrWhiteSpace(clientContext.UserId)
+            )
+            {
+                return new BadRequestResult();
+            }
+
+            return Ok(repo.GetParent(clientContext));
+        }
+
+        [HttpPost]
         [Route("/uploadfile")]
         public async Task<ActionResult> UploadFile()
         {
@@ -203,6 +218,28 @@ namespace MainService.Controllers
             var files = repo.ListFolder(clientContext);
 
             return new OkObjectResult(files);
+        }
+
+        [HttpPost]
+        [Route("/downloadfile")]
+        public async Task<ActionResult> DownloadFile([FromQuery] string fileid)
+        {
+            var clientContext = HttpContext.Items["ClientContext"] as ClientContext;
+
+            if (clientContext == null
+                || string.IsNullOrWhiteSpace(clientContext.UserId)
+                || string.IsNullOrWhiteSpace(fileid)
+            )
+            {
+                return new BadRequestResult();
+            }
+
+            // TO DO: token validation
+            var contentBytes = await repo.DownloadFile(clientContext, fileid);
+
+            var file = new FileContentResult(contentBytes, "application/octet-stream");
+
+            return file;
         }
     }
 }
