@@ -13,8 +13,8 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "MyDriveBlobConnectionString": "DefaultEndpointsProtocol=https;AccountName=mydrivechandler;AccountKey=NCaQDtXzvfgUUsRhESB06oAdhDHF9m7rzZNNqAG0GkZ7GDQ/OrY6V/4d9hL6j3L9BV5Ngf5ZOe99atxTwRHN5A==;EndpointSuffix=core.windows.net",
-        "MyDriveContainerName": "mydrive"
+        "MyDriveBlobConnectionString": "",
+        "MyDriveContainerName": ""
       }
     },
     "MainService": {
