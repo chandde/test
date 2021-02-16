@@ -111,10 +111,12 @@ export function HomePage() {
     }
 
     const getparentCallback = (parentFolderId) => {
-        setFiles(null);
-        context.updateContext({
-            folderId: parentFolderId
-        });                
+        if (parentFolderId && parentFolderId.length > 0) {
+            setFiles(null);
+            context.updateContext({
+                folderId: parentFolderId
+            });
+        }
     }
 
     const onGoUpClick = () => {

@@ -9,10 +9,10 @@ export function CreateUser(username, password, callback, errorcallback) {
     xhr.onload = callback;
     xhr.onerror = () => errorcallback(xhr.status);
     xhr.open('POST', `${ServiceHost}createuser`);
-    xhr.send({
+    xhr.send(JSON.stringify({
         UserName: username,
         Password: password,
-    });
+    }));
 };
 
 export function Login(username, password, callback, errorcallback) {
