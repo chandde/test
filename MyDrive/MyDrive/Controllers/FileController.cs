@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MainService.MiddleTier;
+using MainService.Types;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,80 +12,128 @@ namespace MainService.Controllers
 {
     public class FileController : Controller
     {
-        // GET: FileController
-        [HttpGet]
-        public ActionResult Index()
+        ICache cache;
+        MySqlContext mySqlContext;
+        Repository repo;
+        Authentication auth;
+
+        public FileController(MySqlContext mySqlContext, IConfiguration configuration, Repository repo, Authentication auth)
         {
+            // this.cache = cache;
+            this.mySqlContext = mySqlContext;
+            this.repo = repo;
+            this.auth = auth;
+        }
+        [HttpPost]
+        [Route("/createfolder")]
+        // GET: UserController
+        public ActionResult<File> CreateFolder()
+        {
+            var clientContext = HttpContext.Items["ClientContext"] as ClientContext;
+
+            if (string.IsNullOrWhiteSpace(clientContext.UserId)
+                || string.IsNullOrWhiteSpace(clientContext.FolderId)
+                || string.IsNullOrWhiteSpace(clientContext.FileName)
+            )
+            {
+                return new BadRequestResult();
+            }
+
+            var file = repo.CreateFolder(clientContext);
+
+            return file;
+        }
+
+        [HttpPost]
+        [Route("/deletefile")]
+        public ActionResult DeleteFile()
+        {
+            var clientContext = HttpContext.Items["ClientContext"] as ClientContext;
+
+            if (string.IsNullOrWhiteSpace(clientContext.FileId)
+                || string.IsNullOrWhiteSpace(clientContext.UserId)
+            )
+            {
+                return new BadRequestResult();
+            }
+
+            repo.DeleteFile(clientContext);
+
             return new OkResult();
         }
 
-        // GET: FileController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: FileController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: FileController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        [Route("/getparent")]
+        public ActionResult GetParent()
         {
-            try
+            var clientContext = HttpContext.Items["ClientContext"] as ClientContext;
+            if (string.IsNullOrWhiteSpace(clientContext.FolderId)
+                || string.IsNullOrWhiteSpace(clientContext.UserId)
+            )
             {
-                return RedirectToAction(nameof(Index));
+                return new BadRequestResult();
             }
-            catch
-            {
-                return View();
-            }
+
+            return Ok(repo.GetParent(clientContext));
         }
 
-        // GET: FileController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: FileController/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        [Route("/uploadfile")]
+        public async Task<ActionResult> UploadFile()
         {
-            try
+            var clientContext = HttpContext.Items["ClientContext"] as ClientContext;
+            if (string.IsNullOrWhiteSpace(clientContext.FolderId)
+                || string.IsNullOrWhiteSpace(clientContext.UserId)
+            )
             {
-                return RedirectToAction(nameof(Index));
+                return new BadRequestResult();
             }
-            catch
-            {
-                return View();
-            }
+
+            var file = await repo.CreateFileAsync(HttpContext);
+
+            return new OkResult();
         }
 
-        // GET: FileController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: FileController/Delete/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        [Route("/listfolder")]
+        public ActionResult<List<File>> ListFolder()
         {
-            try
+            var clientContext = HttpContext.Items["ClientContext"] as ClientContext;
+
+            if (clientContext == null
+                || string.IsNullOrWhiteSpace(clientContext.FolderId)
+                || string.IsNullOrWhiteSpace(clientContext.UserId)
+            )
             {
-                return RedirectToAction(nameof(Index));
+                return new BadRequestResult();
             }
-            catch
+
+            // TO DO: token validation
+            var files = repo.ListFolder(clientContext);
+
+            return new OkObjectResult(files);
+        }
+
+        [HttpPost]
+        [Route("/downloadfile")]
+        public async Task<ActionResult> DownloadFile([FromQuery] string fileid)
+        {
+            var clientContext = HttpContext.Items["ClientContext"] as ClientContext;
+
+            if (clientContext == null
+                || string.IsNullOrWhiteSpace(clientContext.UserId)
+                || string.IsNullOrWhiteSpace(fileid)
+            )
             {
-                return View();
+                return new BadRequestResult();
             }
+
+            // TO DO: token validation
+            var contentBytes = await repo.DownloadFile(clientContext, fileid);
+
+            var file = new FileContentResult(contentBytes, "application/octet-stream");
+
+            return file;
         }
     }
 }
