@@ -19,7 +19,7 @@ namespace MainService.Controllers
         {
             var context = HttpContext.Features.Get<IExceptionHandlerFeature>();
             var exception = context.Error; // Your exception
-
+            Console.WriteLine(exception);
             return StatusCode(500, exception);
         }
     }
