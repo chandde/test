@@ -3,11 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MainService", "MyDrive\MainService.csproj", "{EDD32082-3548-4649-8259-F398BC666BB6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HashWorker", "HashWorker\HashWorker.csproj", "{7882E1F6-C98F-4249-9760-F641D77B8C1E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureWorker", "AzureWorker\AzureWorker.csproj", "{AEFDFEC2-7E97-48F4-95EA-D701AB10142C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MainService", "MyDrive\MainService.csproj", "{EDD32082-3548-4649-8259-F398BC666BB6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +15,6 @@ Global
 		{EDD32082-3548-4649-8259-F398BC666BB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDD32082-3548-4649-8259-F398BC666BB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDD32082-3548-4649-8259-F398BC666BB6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7882E1F6-C98F-4249-9760-F641D77B8C1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7882E1F6-C98F-4249-9760-F641D77B8C1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7882E1F6-C98F-4249-9760-F641D77B8C1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7882E1F6-C98F-4249-9760-F641D77B8C1E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AEFDFEC2-7E97-48F4-95EA-D701AB10142C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AEFDFEC2-7E97-48F4-95EA-D701AB10142C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AEFDFEC2-7E97-48F4-95EA-D701AB10142C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AEFDFEC2-7E97-48F4-95EA-D701AB10142C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
