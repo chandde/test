@@ -32,19 +32,19 @@ namespace MainService
             ClientContext context = null;
 
             // special handling for uploadfile
-            // 1. userif and folderid is from url querystring, because the body is the actual file being uploaded
+            // 1. userif and folderId is from url querystring, because the body is the actual file being uploaded
             // 2. do not consume the body at all, otherwise later in multipart reader will have trouble accessing the stream
             if (httpContext.Request.Path.Value == "/uploadfile")
             {
                 if (httpContext.Request.QueryString.HasValue)
                 {
                     var qs = QueryHelpers.ParseQuery(httpContext.Request.QueryString.Value);
-                    if (!string.IsNullOrWhiteSpace(qs["userid"]) || !string.IsNullOrWhiteSpace(qs["folderid"]))
+                    if (!string.IsNullOrWhiteSpace(qs["userId"]) || !string.IsNullOrWhiteSpace(qs["folderId"]))
                     {
                         context = new ClientContext
                         {
-                            UserId = qs["userid"],
-                            FolderId = qs["folderid"],
+                            UserId = qs["userId"],
+                            FolderId = qs["folderId"],
                         };
                     }
                 }
@@ -88,9 +88,9 @@ namespace MainService
                 return;
             }
 
-            var userid = auth.ValidateAndExtractToken(jwtToken);
+            var userId = auth.ValidateAndExtractToken(jwtToken);
 
-            if (string.IsNullOrWhiteSpace(userid))
+            if (string.IsNullOrWhiteSpace(userId))
             {
                 httpContext.Response.StatusCode = 401;
                 foreach (var cookie in httpContext.Request.Cookies)

@@ -29,9 +29,9 @@ namespace MainService.MiddleTier
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim("userid", user.UserId),
+                    new Claim("userId", user.UserId),
                     new Claim("username", user.UserName),
-                    new Claim("rootfolderid", user.RootFolderId),
+                    new Claim("rootfolderId", user.RootFolderId),
                 }),
                 Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -56,7 +56,7 @@ namespace MainService.MiddleTier
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
-                var userId = jwtToken.Claims.First(x => x.Type == "userid").Value;
+                var userId = jwtToken.Claims.First(x => x.Type == "userId").Value;
                 return userId;
             }
             catch (Exception e)

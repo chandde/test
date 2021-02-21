@@ -19,8 +19,8 @@ function App() {
     }
   };
 
-  const userId = getCookie("userid");
-  const folderId = getCookie("folderid");
+  const userId = getCookie("userId");
+  const folderId = getCookie("folderId");
   const token = getCookie("jwttokencookie");
   const userName = getCookie("username");
 

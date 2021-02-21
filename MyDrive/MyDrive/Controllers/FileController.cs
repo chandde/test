@@ -116,20 +116,20 @@ namespace MainService.Controllers
 
         [HttpPost]
         [Route("/downloadfile")]
-        public async Task<ActionResult> DownloadFile([FromQuery] string fileid)
+        public async Task<ActionResult> DownloadFile([FromQuery] string fileId)
         {
             var clientContext = HttpContext.Items["ClientContext"] as ClientContext;
 
             if (clientContext == null
                 || string.IsNullOrWhiteSpace(clientContext.UserId)
-                || string.IsNullOrWhiteSpace(fileid)
+                || string.IsNullOrWhiteSpace(fileId)
             )
             {
                 return new BadRequestResult();
             }
 
             // TO DO: token validation
-            var contentBytes = await repo.DownloadFile(clientContext, fileid);
+            var contentBytes = await repo.DownloadFile(clientContext, fileId);
 
             var file = new FileContentResult(contentBytes, "application/octet-stream");
 

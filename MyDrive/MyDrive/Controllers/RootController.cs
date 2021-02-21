@@ -56,8 +56,8 @@ namespace MainService.Controllers
             if (user != null && !string.IsNullOrWhiteSpace(token))
             {
                 HttpContext.Response.Cookies.Append("jwttokencookie", token);
-                HttpContext.Response.Cookies.Append("userid", user.UserId);
-                HttpContext.Response.Cookies.Append("folderid", user.RootFolderId);
+                HttpContext.Response.Cookies.Append("userId", user.UserId);
+                HttpContext.Response.Cookies.Append("folderId", user.RootFolderId);
                 HttpContext.Response.Cookies.Append("username", user.UserName);
                 return new OkObjectResult(token);
             }

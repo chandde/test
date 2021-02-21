@@ -105,10 +105,10 @@ namespace MainService.MiddleTier
 
 
         // TO DO make this middleware
-        bool ValidateToken(string token, string userid)
+        bool ValidateToken(string token, string userId)
         {
-            var useridfromtoken = auth.ValidateAndExtractToken(token);
-            if (string.IsNullOrWhiteSpace(useridfromtoken) || useridfromtoken != userid)
+            var userIdfromtoken = auth.ValidateAndExtractToken(token);
+            if (string.IsNullOrWhiteSpace(userIdfromtoken) || userIdfromtoken != userId)
             {
                 return false;
             }
@@ -148,20 +148,20 @@ namespace MainService.MiddleTier
             }
         }
 
-        public void DeleteFolder(string folderid)
+        public void DeleteFolder(string folderId)
         {
             // DFS or BFS calling into DeleteFolder or DeleteFile on all children, child could be file or folder
 
 
         }
 
-        public async Task<Byte[]> DownloadFile(ClientContext context, string fileid)
+        public async Task<Byte[]> DownloadFile(ClientContext context, string fileId)
         {
             // verify user has access to the file
-            var file = mySqlContext.File.SingleOrDefault(f => f.FileId == fileid);
+            var file = mySqlContext.File.SingleOrDefault(f => f.FileId == fileId);
             if (file == null)
             {
-                throw new Exception($"file {fileid} does not exist");
+                throw new Exception($"file {fileId} does not exist");
             }
 
             var folder = mySqlContext.File.SingleOrDefault(f => f.FileId == file.ParentFolderId);
@@ -203,7 +203,7 @@ namespace MainService.MiddleTier
         {
             if (string.IsNullOrWhiteSpace(context.FolderId))
             {
-                throw new Exception("missing folderid");
+                throw new Exception("missing folderId");
             }
 
             var files = mySqlContext.File.Where(f => f.ParentFolderId == context.FolderId);
@@ -216,7 +216,7 @@ namespace MainService.MiddleTier
         {
             if (string.IsNullOrWhiteSpace(context.UserId))
             {
-                throw new Exception("username and userid both are empty");
+                throw new Exception("username and userId both are empty");
             }
 
             User user = null;

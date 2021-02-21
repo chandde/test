@@ -30,9 +30,9 @@ export function LoginPage() {
         if (response) {
             var decoded = jwt_decode(response);
             context.updateContext({
-                userId: decoded.userid,
+                userId: decoded.userId,
                 userName: decoded.username,
-                folderId: decoded.rootfolderid,
+                folderId: decoded.rootfolderId,
                 token: response,                
             });
             history.push('/')
