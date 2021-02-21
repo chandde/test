@@ -20,7 +20,8 @@ namespace MainService
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder.UseStartup<Startup>()
+                    .UseUrls("https://*:44332", "http://*:52371", "https://*:5001", "http://*:5000");
                 });
     }
 }
