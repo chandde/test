@@ -28,20 +28,6 @@ namespace MainService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options =>
-            {
-                options.AddDefaultPolicy(
-                    builder =>
-                    {
-                        builder.WithOrigins("*");
-                    });
-                options.AddPolicy("StaticCorsPolicy", policyBuilder => policyBuilder
-                        .WithOrigins("*")
-                        .SetIsOriginAllowedToAllowWildcardSubdomains()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials());
-            });
             services.AddControllers();
             var mySqlConnectionString = Configuration.GetConnectionString("MySql");
             services.AddDbContext<MySqlContext>(opt => opt.UseMySQL(mySqlConnectionString));
@@ -63,26 +49,12 @@ namespace MainService
 
             app.UseHttpsRedirection();
 
+            app.UseStaticFiles();
+
             app.UseRouting();
 
             app.UseCors();
 
-            // use this to serve the compiled static react app from wwwroot
-            // manually defined controllers are all for data requests
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                ServeUnknownFileTypes = true,
-                OnPrepareResponse = (ctx) =>
-                {
-                    var policy = corsPolicyProvider.GetPolicyAsync(ctx.Context, "StaticCorsPolicy")
-                        .ConfigureAwait(false)
-                        .GetAwaiter().GetResult();
-
-                    var corsResult = corsService.EvaluatePolicy(ctx.Context, policy);
-
-                    corsService.ApplyResult(corsResult, ctx.Context.Response);
-                }
-            });
             app.UseAuthorization();
 
             app.UseMiddleware<ContextMiddleware>();
