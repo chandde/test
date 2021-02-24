@@ -35,6 +35,8 @@ namespace MainService
             services.AddScoped<Repository>();
             services.AddScoped<AzureWorker>();
             services.AddScoped<Authentication>();
+
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,11 +51,16 @@ namespace MainService
 
             app.UseHttpsRedirection();
 
-            app.UseStaticFiles();
+            // app.UseStaticFiles();
 
             app.UseRouting();
 
-            app.UseCors();
+            app.UseCors((builder) =>
+            {
+                builder.AllowAnyOrigin();
+                builder.AllowAnyMethod();
+                builder.AllowAnyHeader();
+            });
 
             app.UseAuthorization();
 

@@ -23,21 +23,22 @@ namespace MainService.Controllers
             this.repo = repo;
             this.auth = auth;
         }
-        [HttpGet]
-        [Route("/")]
-        // GET: UserController
-        public ActionResult GetRoot([FromQuery] string userId)
-        {
-            return new RedirectResult("/index.html");
-        }
 
-        [HttpGet]
-        [Route("/login")]
-        // GET: UserController
-        public ActionResult Login([FromQuery] string userId)
-        {
-            return new RedirectResult("/index.html");
-        }
+        //[HttpGet]
+        //[Route("/")]
+        //// GET: UserController
+        //public ActionResult GetRoot([FromQuery] string userId)
+        //{
+        //    return new RedirectResult("/index.html");
+        //}
+
+        //[HttpGet]
+        //[Route("/login")]
+        //// GET: UserController
+        //public ActionResult Login([FromQuery] string userId)
+        //{
+        //    return new RedirectResult("/index.html");
+        //}
 
         [HttpPost]
         [Route("/authenticate")]
