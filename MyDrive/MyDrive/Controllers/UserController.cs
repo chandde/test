@@ -18,7 +18,6 @@ namespace MainService.Controllers
 {
     public class UserController : Controller
     {
-        ICache cache;
         MySqlContext mySqlContext;
         Repository repo;
         Authentication auth;

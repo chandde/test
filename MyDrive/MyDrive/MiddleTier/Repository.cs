@@ -116,43 +116,62 @@ namespace MainService.MiddleTier
             return true;
         }
 
-        public void DeleteFile(ClientContext context)
+        public async Task DeleteFile(ClientContext context, string fileId)
         {
-            // 1. remove entry from file table
-            // 2. search for sha256 in file table, if no more references, remove its entry from hash table
-            // use transaction to create user and its root folder altogether
-
-            // TO DO: verify user has access to the file
-
-            using (var transaction = mySqlContext.Database.BeginTransaction())
+            var file = mySqlContext.File.FirstOrDefault(f => f.FileId == context.FileId);
+            if (file != null)
             {
-                var file = mySqlContext.File.FirstOrDefault(f => f.FileId == context.FileId);
-                if (file != null)
+                if (file.FileType == "Folder")
                 {
-                    var sha256 = file.SHA256;
-                    mySqlContext.File.Remove(file);
-                    mySqlContext.SaveChanges();
-
-                    // TODO: reimplement below logic as we no longer use Hash table
-                    // if the same hash is no longer used by any file, delete it from Azure blob
-                    //var filesWithSameSHA = mySqlContext.File.Select(f => f.SHA256 == file.SHA256);
-                    //if (filesWithSameSHA.Count() == 0)
-                    //{
-                    //    // no more file using the SHA
-                    //    mySqlContext.Hash.Remove(mySqlContext.Hash.First(h => h.SHA256 == sha256));
-                    //    mySqlContext.SaveChanges();
-                    //}
+                    await this.DeleteFolderInternal(context, file);
                 }
-
-                transaction.Commit();
+                else
+                {
+                    await this.DeleteFileInternal(context, file);
+                }
             }
         }
 
-        public void DeleteFolder(string folderId)
+        private async Task DeleteFileInternal(ClientContext clientContext, File file)
         {
-            // DFS or BFS calling into DeleteFolder or DeleteFile on all children, child could be file or folder
+            // 1. remove entry from file table
+            // 2. search for sha256 in file table, if no more references, remove its entry from hash table
 
+            string sha256 = "";
 
+            using (var transaction = mySqlContext.Database.BeginTransaction())
+            {
+                sha256 = file.SHA256;
+                mySqlContext.File.Remove(file);
+                mySqlContext.SaveChanges();
+
+                transaction.Commit();
+            }
+
+            if (!string.IsNullOrWhiteSpace(sha256))
+            {
+                await new AzureWorker().DeleteFile(sha256);
+            }
+        }
+
+        private async Task DeleteFolderInternal(ClientContext clientContext, File folder)
+        {
+            // list all children of given folder
+            File child;
+            while (null != (child = mySqlContext.File.FirstOrDefault(f => f.ParentFolderId == folder.FileId)))
+            {
+                if (child.FileType == "Folder")
+                {
+                    await this.DeleteFolderInternal(clientContext, child);
+                }
+                else
+                {
+                    await this.DeleteFileInternal(clientContext, child);
+                }
+            }
+
+            mySqlContext.File.Remove(folder);
+            mySqlContext.SaveChanges();
         }
 
         public async Task<Byte[]> DownloadFile(ClientContext context, string fileId)

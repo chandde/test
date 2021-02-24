@@ -2,12 +2,12 @@ import _ from 'underscore';
 
 const ServiceHost = process.env.REACT_APP_SERVICE_ENDPOINT;
 
-export function CreateUser(username, password, callback, errorcallback) {
+export function CreateUser(username, password, callback, errorCallback) {
     const xhr = new XMLHttpRequest();
 
     // get a callback when the server responds
     xhr.onload = callback;
-    xhr.onerror = () => errorcallback(xhr.status);
+    xhr.onerror = () => errorCallback(xhr.status);
     xhr.open('POST', `${ServiceHost}createuser`);
     xhr.send(JSON.stringify({
         UserName: username,
@@ -15,10 +15,10 @@ export function CreateUser(username, password, callback, errorcallback) {
     }));
 };
 
-export function Login(username, password, callback, errorcallback) {
+export function Login(username, password, callback, errorCallback) {
     const xhr = new XMLHttpRequest();
     xhr.onload = () => callback(xhr.response);
-    xhr.onerror = () => errorcallback(xhr.status);
+    xhr.onerror = () => errorCallback(xhr.status);
     xhr.open('POST', `${ServiceHost}authenticate`);
     xhr.send(JSON.stringify({
         UserName: username,
@@ -26,11 +26,11 @@ export function Login(username, password, callback, errorcallback) {
     }));
 }
 
-export function listFolder(userId, folderId, token, callback, errorcallback) {
+export function listFolder(userId, folderId, token, callback, errorCallback) {
     const xhr = new XMLHttpRequest();
     xhr.onload = () => callback(xhr.response);
     xhr.onerror = () => {
-        errorcallback(xhr.status);
+        errorCallback(xhr.status);
     }
     xhr.open('POST', `${ServiceHost}listfolder`);
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
@@ -40,7 +40,7 @@ export function listFolder(userId, folderId, token, callback, errorcallback) {
     }));
 }
 
-export function UploadFiles(userId, folderId, files, token, callback, errorcallback) {
+export function UploadFiles(userId, folderId, files, token, callback, errorCallback) {
     const formData = new FormData();
 
     // Update the formData object
@@ -51,16 +51,16 @@ export function UploadFiles(userId, folderId, files, token, callback, errorcallb
     ));
     const xhr = new XMLHttpRequest();
     xhr.onload = () => callback(xhr.response);
-    xhr.onerror = () => errorcallback(xhr.status);
+    xhr.onerror = () => errorCallback(xhr.status);
     xhr.open('POST', `${ServiceHost}uploadfile?userId=${userId}&folderId=${folderId}`);
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
     xhr.send(formData);
 };
 
-export function DownloadFile(userId, fileId, filename, token, callback, errorcallback) {
+export function DownloadFile(userId, fileId, filename, token, callback, errorCallback) {
     const xhr = new XMLHttpRequest();
     xhr.onload = () => callback(xhr.response, filename);
-    xhr.onerror = () => errorcallback(xhr.status);
+    xhr.onerror = () => errorCallback(xhr.status);
     xhr.open('POST', `${ServiceHost}downloadfile?fileId=${fileId}`);
     xhr.responseType = "blob";
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
@@ -69,10 +69,10 @@ export function DownloadFile(userId, fileId, filename, token, callback, errorcal
     }));
 }
 
-export function CreateFolder(userId, folderId, newFolderName, token, callback, errorcallback) {
+export function CreateFolder(userId, folderId, newFolderName, token, callback, errorCallback) {
     const xhr = new XMLHttpRequest();
     xhr.onload = () => callback(xhr.response);
-    xhr.onerror = () => errorcallback(xhr.status);
+    xhr.onerror = () => errorCallback(xhr.status);
     xhr.open('POST', `${ServiceHost}createfolder?folderName=${newFolderName}`);
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
     xhr.send(JSON.stringify({
@@ -82,14 +82,26 @@ export function CreateFolder(userId, folderId, newFolderName, token, callback, e
     }));
 }
 
-export function GetParentFolder(userId, folderId, token, callback, errorcallback) {
+export function GetParentFolder(userId, folderId, token, callback, errorCallback) {
     const xhr = new XMLHttpRequest();
     xhr.onload = () => callback(xhr.response);
-    xhr.onerror = () => errorcallback(xhr.status);
+    xhr.onerror = () => errorCallback(xhr.status);
     xhr.open('POST', `${ServiceHost}getparent`);
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
     xhr.send(JSON.stringify({
         UserId: userId,
         FolderId: folderId,
+    }));    
+}
+
+export function DeleteFile(userId, fileId, token, callback, errorCallback) {    
+    const xhr = new XMLHttpRequest();
+    xhr.onload = () => callback(xhr.response);
+    xhr.onerror = () => errorCallback(xhr.status);
+    xhr.open('POST', `${ServiceHost}deletefile?fileid=${fileId}`);
+    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+    xhr.send(JSON.stringify({
+        UserId: userId,
+        FileId: fileId,
     }));    
 }

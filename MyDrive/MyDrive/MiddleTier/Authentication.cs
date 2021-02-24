@@ -59,7 +59,7 @@ namespace MainService.MiddleTier
                 var userId = jwtToken.Claims.First(x => x.Type == "userId").Value;
                 return userId;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return "";
             }

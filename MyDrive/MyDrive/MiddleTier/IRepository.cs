@@ -15,12 +15,10 @@ namespace MainService.MiddleTier
         public User GetUser(string username, string userId);
 
         public File CreateFolder(string userId, string parentFolderId, string folderName);
-        public void DeleteFolder(string folderId);
         public File GetFolder(string folderId);
         public List<File> ListFolder(string folderId);
 
         public Task<List<File>> CreateFileAsync(string userId, string folderId, HttpRequest request);
-        public void DeleteFile(string fileId);
         public File DonwloadFile();
     }
 }

@@ -41,8 +41,10 @@ namespace MainService
             }
         }
 
-        public void DeleteFile(string url)
+        public async Task DeleteFile(string fileName)
         {
+            var blob = containerClient.GetBlobClient(fileName);
+            await blob.DeleteIfExistsAsync();
         }
     }
 }

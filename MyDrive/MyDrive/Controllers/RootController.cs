@@ -11,7 +11,6 @@ namespace MainService.Controllers
 {
     public class RootController : Controller
     {
-        ICache cache;
         MySqlContext mySqlContext;
         Repository repo;
         Authentication auth;

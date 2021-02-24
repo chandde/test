@@ -8,7 +8,7 @@ import { useHistory } from "react-router-dom";
 import _ from 'underscore';
 
 import { SessionContext } from './context';
-import { listFolder, UploadFiles, DownloadFile, CreateFolder, GetParentFolder } from './service';
+import { listFolder, UploadFiles, DownloadFile, CreateFolder, GetParentFolder, DeleteFile } from './service';
 
 export function HomePage() {
     const [files, setFiles] = useState(null);
@@ -119,6 +119,22 @@ export function HomePage() {
         }
     }
 
+    const deleteClicked = (fileId) =>{
+        // delete file or folder
+        DeleteFile(context.globalContext.userId, fileId, context.globalContext.token, deleteCallback);
+    }
+
+    const deleteCallback = () => {
+        // on delete success, refresh folder
+        listFolder(
+            context.globalContext.userId,
+            context.globalContext.folderId,
+            context.globalContext.token,
+            listCallback,
+            listErrorcallback
+        );        
+    }
+
     const onGoUpClick = () => {
         GetParentFolder(context.globalContext.userId, context.globalContext.folderId, context.globalContext.token, getparentCallback)
     }
@@ -128,6 +144,9 @@ export function HomePage() {
     }
 
     const buildFileList = () => _.map(_.sortBy(files, f => f.fileName.toLowerCase()), file => (<div>
+        <button onClick={() => deleteClicked(file.fileId)}>
+            Delete
+        </button>
         <a
             className={file.fileType}
             href={`javascript:void(0)`}

@@ -12,7 +12,6 @@ namespace MainService.Controllers
 {
     public class FileController : Controller
     {
-        ICache cache;
         MySqlContext mySqlContext;
         Repository repo;
         Authentication auth;
@@ -46,7 +45,7 @@ namespace MainService.Controllers
 
         [HttpPost]
         [Route("/deletefile")]
-        public ActionResult DeleteFile()
+        public async Task<ActionResult> DeleteFile()
         {
             var clientContext = HttpContext.Items["ClientContext"] as ClientContext;
 
@@ -57,7 +56,7 @@ namespace MainService.Controllers
                 return new BadRequestResult();
             }
 
-            repo.DeleteFile(clientContext);
+            await repo.DeleteFile(clientContext, clientContext.FileId);
 
             return new OkResult();
         }
