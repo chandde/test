@@ -4,18 +4,26 @@ import { useContext, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { SessionContext } from './context';
 import { CreateUser } from './service';
+import { sha256 } from 'js-sha256';
 
 import Promise from 'bluebird';
 
 export function RegisterPage() {
     const createAccount = () => {
         // hash password
+       
         const passwordStream = new TextEncoder().encode(password1);
-        Promise.resolve(crypto.subtle.digest('SHA-256', passwordStream)).then(hashBuffer => {
-            const hashArray = Array.from(new Uint8Array(hashBuffer));                     // convert buffer to byte array
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
-            CreateUser(userName, hashHex, createAccountCallback, createAccountErrorCallback);
-        });
+        const sha = sha256.create();
+        sha.update(password1);
+        // sha.hex();
+        CreateUser(userName, sha.hex(), createAccountCallback, createAccountErrorCallback);
+
+        // const passwordStream = new TextEncoder().encode(password1);
+        // Promise.resolve(crypto.subtle.digest('SHA-256', passwordStream)).then(hashBuffer => {
+        //     const hashArray = Array.from(new Uint8Array(hashBuffer));                     // convert buffer to byte array
+        //     const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
+        //     CreateUser(userName, hashHex, createAccountCallback, createAccountErrorCallback);
+        // });
     };
 
     const createAccountCallback = () => {

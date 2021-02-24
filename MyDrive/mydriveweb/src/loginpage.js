@@ -5,6 +5,7 @@ import { useContext, useState } from 'react';
 import { useHistory } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import Promise from 'bluebird';
+import {sha256} from "js-sha256";
 
 import { SessionContext } from './context';
 import { Login } from './service';
@@ -49,11 +50,16 @@ export function LoginPage() {
     const login = () => {
         // hash password
         const passwordStream = new TextEncoder().encode(password);
-        Promise.resolve(crypto.subtle.digest('SHA-256', passwordStream)).then(hashBuffer => {
-            const hashArray = Array.from(new Uint8Array(hashBuffer));                     // convert buffer to byte array
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
-            Login(username, hashHex, loginCallback, loginErrorCallback);
-        });
+        const sha = sha256.create();
+        sha.update(password);
+        // sha.hex();
+        Login(username, sha.hex(), loginCallback, loginErrorCallback);
+
+        // Promise.resolve(crypto.subtle.digest('SHA-256', passwordStream)).then(hashBuffer => {
+        //     const hashArray = Array.from(new Uint8Array(hashBuffer));                     // convert buffer to byte array
+        //     const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
+        //     Login(username, hashHex, loginCallback, loginErrorCallback);
+        // });
     };
 
     return (
