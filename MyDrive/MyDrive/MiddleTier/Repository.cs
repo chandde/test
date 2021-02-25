@@ -121,6 +121,7 @@ namespace MainService.MiddleTier
             var file = mySqlContext.File.FirstOrDefault(f => f.FileId == context.FileId);
             if (file != null)
             {
+                Console.WriteLine($"deleting file {file.FileId} {file.FileName}");
                 if (file.FileType == "Folder")
                 {
                     await this.DeleteFolderInternal(context, file);
@@ -137,11 +138,12 @@ namespace MainService.MiddleTier
             // 1. remove entry from file table
             // 2. search for sha256 in file table, if no more references, remove its entry from hash table
 
-            string sha256 = "";
+            string sha256 = file.SHA256;
+
+            Console.WriteLine($"deleting file {file.FileId} {file.FileName} {file.SHA256}");
 
             using (var transaction = mySqlContext.Database.BeginTransaction())
             {
-                sha256 = file.SHA256;
                 mySqlContext.File.Remove(file);
                 mySqlContext.SaveChanges();
 
@@ -308,6 +310,7 @@ namespace MainService.MiddleTier
 
                 if (exsiting == null)
                 {
+                    Console.WriteLine($"creating file {fileName} {shaStr}");
                     new AzureWorker().UploadFile(shaStr, ms);
                     // no need to use a separate hash table, given the hash as name, fixed storage and fixed container
                     // we can build the url for the file to download!
