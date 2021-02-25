@@ -20,6 +20,8 @@ namespace MainService
         {
             connStr = Environment.GetEnvironmentVariable("MyDriveBlobConnectionString");
             containerName = Environment.GetEnvironmentVariable("MyDriveContainerName");
+            Console.WriteLine(connStr);
+            Console.WriteLine(containerName);
             serviceClient = new BlobServiceClient(connStr);
             containerClient = serviceClient.GetBlobContainerClient(containerName);
         }
