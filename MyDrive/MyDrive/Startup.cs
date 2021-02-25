@@ -49,7 +49,7 @@ namespace MainService
 
             app.UseExceptionHandler("/error");
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             // app.UseStaticFiles();
 

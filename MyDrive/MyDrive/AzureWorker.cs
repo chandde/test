@@ -28,6 +28,7 @@ namespace MainService
 
         public void UploadFile(string filename, Stream content)
         {
+            Console.WriteLine(filename);
             content.Position = 0;
             containerClient.UploadBlob(filename, content);
         }
@@ -45,6 +46,7 @@ namespace MainService
 
         public async Task DeleteFile(string fileName)
         {
+            Console.WriteLine(fileName);
             var blob = containerClient.GetBlobClient(fileName);
             await blob.DeleteIfExistsAsync();
         }
