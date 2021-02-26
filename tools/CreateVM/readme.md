@@ -17,4 +17,5 @@ CreateVM -VMName UIServerBuild5 -VMRootFolder D:\hyperv -VHDSize 200GB -VMGen 2 
 3. after configuration it'll boot the VM automatically
 
 **Note**
+
 The tool assumes you already have an "External" Virtual Switch on the machine, and it locates the first "External" switch and uses it for the VM.
