@@ -1,6 +1,8 @@
 import _ from 'underscore';
 
-const ServiceHost = process.env.REACT_APP_SERVICE_ENDPOINT;
+// use same host and port for API and static files, use api subroute for all API calls
+// so that nginx can proxy accordingly
+const ServiceHost = process.env.REACT_APP_SERVICE_ENDPOINT + "api/";
 
 export function CreateUser(username, password, callback, errorCallback) {
     const xhr = new XMLHttpRequest();
