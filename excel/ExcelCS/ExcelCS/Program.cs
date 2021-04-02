@@ -5,20 +5,6 @@ using System.Net;
 using System.Threading;
 using System.Drawing;
 
-//class Ratio
-//{
-//    public Ratio(string a, double b, double c)
-//    {
-//        desc = a;
-//        width = b;
-//        height = c;
-//    }
-
-//    public string desc;
-//    public double width;
-//    public double height;
-//}
-
 namespace ExcelCS
 {
     class Program
