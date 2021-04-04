@@ -82,12 +82,12 @@ namespace ExcelCS
             });
         }
 
-        static void noCropOrPad(int width, int height, int index, string[] cells, ref List<string> output, string customMsg)
+        static void noCropOrPad(int width, int height, int index, string[] cells, ref List<string> output)
         {
             var newWidth = width;
             var newHeight = height;
             var newUrl = $"{cells[2]}&w={newWidth}&h={newHeight}"; // not used
-            output.AddRange(new List<string> { width.ToString(), height.ToString(), ratios[index].Item1, customMsg });
+            output.AddRange(new List<string> { width.ToString(), height.ToString(), ratios[index].Item1, "Perfect match no need to crop or pad and using original urls", "" , cells[2], "", "", cells[2] });
         }
 
         static void Main(string[] args)
@@ -129,7 +129,7 @@ namespace ExcelCS
                         {
                             if (Math.Ceiling(width * ratios[index].Item3) /* height */ == Math.Ceiling(height * ratios[index].Item2) /* width */)
                             {
-                                noCropOrPad(width, height, index, cells, ref output, "Perfect ratio no need to crop or pad");
+                                noCropOrPad(width, height, index, cells, ref output);
                                 break;
 
                             }
